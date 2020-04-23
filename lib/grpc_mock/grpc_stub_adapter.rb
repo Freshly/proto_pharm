@@ -8,16 +8,13 @@ module GrpcMock
   class GrpcStubAdapter
     module MockStub
       def request_response(method, request, *args, **opts)
-        unless GrpcMock::GrpcStubAdapter.enabled?
-          return super
-        end
+        return super unless GrpcMock::GrpcStubAdapter.enabled?
 
         mock = GrpcMock.stub_registry.response_for_request(method, request)
+
         if mock
-          # TODO: support returning operation in error case too
           if opts[:return_op]
-            OperationStub.new response: mock.evaluate,
-                              metadata: opts[:metadata]
+            OperationStub.new(metadata: opts[:metadata]) { mock.evaluate }
           else
             mock.evaluate
           end
