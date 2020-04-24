@@ -5,14 +5,14 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'grpc_mock/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'grpc_mock'
+  spec.name          = 'gruffish'
   spec.version       = GrpcMock::VERSION
-  spec.authors       = ['Yuta Iwama']
-  spec.email         = ['ganmacs@gmail.com']
+  spec.authors       = ['Yuta Iwama', 'Allen Rettberg']
+  spec.email         = ['ganmacs@gmail.com', 'allen.rettberg@freshly.com']
 
-  spec.summary       = 'Library for stubbing grpc in Ruby'
-  spec.description   = 'Library for stubbing grpc in Ruby'
-  spec.homepage      = 'https://github.com/ganmacs/grpc_mock'
+  spec.summary       = 'Stubs your gRPCs with some gruffy magic'
+  spec.description   = 'Stubs your gRPCs with some gruffy magic'
+  spec.homepage      = 'https://github.com/Freshly/gruffish'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
