@@ -14,7 +14,7 @@ module GrpcMock
 
         if mock
           if opts[:return_op]
-            OperationStub.new(metadata: opts[:metadata]) { mock.evaluate }
+            OperationStub.new(response: mock.evaluate, metadata: opts[:metadata])
           else
             mock.evaluate
           end
