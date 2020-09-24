@@ -41,6 +41,75 @@ RSpec.describe GrpcMock do
     end
   end
 
+  describe '.stub_grpc_action' do
+    let(:action) do
+      double(input: Hello::HelloRequest, output: Hello::HelloResponse)
+    end
+
+    context 'with to_return' do
+      let(:response) { { msg: 'test' } }
+
+      before do
+        described_class.enable!
+        GrpcMock.stub_grpc_action('/hello.hello/Hello', action).to_return(response)
+      end
+
+      it { expect(client.send_message('hello!')).to eq(Hello::HelloResponse.new(response)) }
+
+      context 'when return_op is true' do
+        let(:client_call) { client.send_message('hello!', return_op: true) }
+
+        it 'returns an executable operation' do
+          expect(client_call).to be_a GrpcMock::OperationStub
+          expect(client_call.execute).to eq Hello::HelloResponse.new(response)
+        end
+      end
+    end
+
+    context 'with to_raise' do
+      let(:exception) { StandardError.new('message') }
+
+      before do
+        described_class.enable!
+        GrpcMock.stub_grpc_action('/hello.hello/Hello', action).to_raise(exception)
+      end
+
+      it { expect { client.send_message('hello!') }.to raise_error(exception.class) }
+    end
+
+    describe '.with' do
+      let(:response) { { msg: 'test' } }
+
+      context 'with equal request' do
+        before do
+          GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(msg: 'hello2!').to_return(response)
+        end
+
+        it { expect(client.send_message('hello2!')).to eq(Hello::HelloResponse.new(response)) }
+
+        context 'and they are two mocking request' do
+          let(:response2) { { msg: 'test2' } }
+
+          before do
+            GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(msg: 'hello2!').to_return(response2)
+          end
+
+          it 'returns newest result' do
+            expect(client.send_message('hello2!')).to eq(Hello::HelloResponse.new(response2))
+          end
+        end
+      end
+
+      context 'with not equal request' do
+        before do
+          GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(msg: 'hello!').to_return(response)
+        end
+
+        it { expect { client.send_message('hello2!') }.to raise_error(GRPC::Unavailable) }
+      end
+    end
+  end
+
   describe '.stub_request' do
     context 'with to_return' do
       let(:response) { Hello::HelloResponse.new(msg: 'test') }
@@ -72,41 +141,41 @@ RSpec.describe GrpcMock do
 
       it { expect { client.send_message('hello!') }.to raise_error(exception.class) }
     end
-  end
 
-  describe '.with' do
-    let(:response) do
-      Hello::HelloResponse.new(msg: 'test')
-    end
-
-    context 'with equal request' do
-      before do
-        GrpcMock.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello2!')).to_return(response)
+    describe '.with' do
+      let(:response) do
+        Hello::HelloResponse.new(msg: 'test')
       end
 
-      it { expect(client.send_message('hello2!')).to eq(response) }
-
-      context 'and they are two mocking request' do
-        let(:response2) do
-          Hello::HelloResponse.new(msg: 'test')
-        end
-
+      context 'with equal request' do
         before do
-          GrpcMock.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello2!')).to_return(response2)
+          GrpcMock.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello2!')).to_return(response)
         end
 
-        it 'returns newest result' do
-          expect(client.send_message('hello2!')).to eq(response2)
+        it { expect(client.send_message('hello2!')).to eq(response) }
+
+        context 'and they are two mocking request' do
+          let(:response2) do
+            Hello::HelloResponse.new(msg: 'test')
+          end
+
+          before do
+            GrpcMock.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello2!')).to_return(response2)
+          end
+
+          it 'returns newest result' do
+            expect(client.send_message('hello2!')).to eq(response2)
+          end
         end
       end
-    end
 
-    context 'with not equal request' do
-      before do
-        GrpcMock.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello!')).to_return(response)
+      context 'with not equal request' do
+        before do
+          GrpcMock.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello!')).to_return(response)
+        end
+
+        it { expect { client.send_message('hello2!') }.to raise_error(GRPC::Unavailable) }
       end
-
-      it { expect { client.send_message('hello2!') }.to raise_error(GRPC::Unavailable) }
     end
   end
 
