@@ -23,9 +23,8 @@ RSpec.describe GrpcMock::ActionStub do
 
   describe '#response' do
     let(:exception) { StandardError.new }
-    let(:value1) { :response_1 }
-    let(:value2) { :response_2 }
-    let(:value3) { :response_3 }
+    let(:value1) { { response1: "response1" } }
+    let(:value2) { { response2: "response2" } }
 
     it 'returns response' do
       stub_grpc_action.to_return(value1)
@@ -37,22 +36,16 @@ RSpec.describe GrpcMock::ActionStub do
       expect { stub_grpc_action.response.evaluate }.to raise_error(StandardError)
     end
 
-    it 'returns responses in a sequence passed as array' do
-      stub_grpc_action.to_return(value1, value2)
-      expect(stub_grpc_action.response.evaluate).to eq(value1)
-      expect(stub_grpc_action.response.evaluate).to eq(value2)
-    end
-
     it 'returns responses in a sequence passed as array with multiple to_return calling' do
-      stub_grpc_action.to_return(value1, value2)
-      stub_grpc_action.to_return(value3)
+      stub_grpc_action.to_return(value1)
+      stub_grpc_action.to_return(value2)
       expect(stub_grpc_action.response.evaluate).to eq(value1)
       expect(stub_grpc_action.response.evaluate).to eq(value2)
-      expect(stub_grpc_action.response.evaluate).to eq(value3)
     end
 
     it 'repeats returning last response' do
-      stub_grpc_action.to_return(value1, value2)
+      stub_grpc_action.to_return(value1)
+      stub_grpc_action.to_return(value2)
       expect(stub_grpc_action.response.evaluate).to eq(value1)
       expect(stub_grpc_action.response.evaluate).to eq(value2)
       expect(stub_grpc_action.response.evaluate).to eq(value2)
@@ -66,17 +59,53 @@ RSpec.describe GrpcMock::ActionStub do
     end
   end
 
-  describe '#to_return' do
-    let(:response) { double(:response) }
+  describe '#with' do
+    context "when hash params" do
+      let(:request) { { request: "request" } }
 
-    it 'registers response' do
-      expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value]).once
-      expect(stub_grpc_action.to_return(response)).to eq(stub_grpc_action)
+      it 'registers request', aggregate: true do
+        expect(action).to receive(:input)
+        expect(input_class).to receive(:new).with(request)
+
+        expect(stub_grpc_action.with(request)).to eq(stub_grpc_action)
+      end
     end
 
-    it 'registers multi responses' do
-      expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value, GrpcMock::Response::Value]).once
-      expect(stub_grpc_action.to_return(response, response)).to eq(stub_grpc_action)
+    context "when proto object" do
+      let(:request) { :request }
+
+      it 'registers request', aggregate: true do
+        expect(action).not_to receive(:input)
+        expect(input_class).not_to receive(:new).with(request)
+
+        expect(stub_grpc_action.with(request)).to eq(stub_grpc_action)
+      end
+    end
+  end
+
+  describe '#to_return' do
+    context "when hash params" do
+      let(:response) { { response: "response" } }
+
+      it 'registers response', aggregate: true do
+        expect(action).to receive(:output)
+        expect(output_class).to receive(:new).with(response)
+
+        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value]).once
+        expect(stub_grpc_action.to_return(response)).to eq(stub_grpc_action)
+      end
+    end
+
+    context "when proto object" do
+      let(:response) { :response }
+
+      it 'registers response', aggregate: true do
+        expect(action).not_to receive(:output)
+        expect(output_class).not_to receive(:new).with(response)
+
+        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value]).once
+        expect(stub_grpc_action.to_return(response)).to eq(stub_grpc_action)
+      end
     end
   end
 

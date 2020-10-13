@@ -9,15 +9,16 @@ module GrpcMock
       super(path)
     end
 
-    # @param request [Hash] a list of parameters for request
-    def with(**request)
-      super(@rpc_action.input.new(request))
+    # @param proto [Object] request proto object
+    # @param request [Hash] parameters for request
+    def with(proto = nil, **request)
+      proto ? super : super(@rpc_action.input.new(request))
     end
 
-    # @param responses [Array<Hash>] one or list of response objects
-    def to_return(*responses)
-      values = [*responses].flatten.map { |v| @rpc_action.output.new(v) }
-      super(values)
+    # @param proto [Object] response proto object
+    # @param response [Hash] parameters to respond with
+    def to_return(proto = nil, **response)
+      proto ? super : super(@rpc_action.output.new(response))
     end
   end
 end
