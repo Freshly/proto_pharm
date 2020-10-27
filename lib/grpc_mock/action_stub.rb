@@ -12,13 +12,13 @@ module GrpcMock
     # @param proto [Object] request proto object
     # @param request [Hash] parameters for request
     def with(proto = nil, **request)
-      proto ? super : super(@rpc_action.input.new(request))
+      proto ? super(proto) : super(@rpc_action.input.new(request))
     end
 
     # @param proto [Object] response proto object
     # @param response [Hash] parameters to respond with
     def to_return(proto = nil, **response)
-      proto ? super : super(@rpc_action.output.new(response))
+      proto ? super(proto) : super(@rpc_action.output.new(response))
     end
   end
 end
