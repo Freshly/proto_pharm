@@ -123,7 +123,7 @@ RSpec.describe GrpcMock do
         end
 
         context 'with not equal request' do
-          let(:request_params) { { msg: 'hello2!' } }
+          let(:request_params) { { msg: 'hello!' } }
 
           before do
             GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(**request_params).to_return(**response_params)
@@ -158,7 +158,7 @@ RSpec.describe GrpcMock do
         end
 
         context 'with not equal request' do
-          let(:request) { Hello::HelloRequest.new(msg: 'hello2!') }
+          let(:request) { Hello::HelloRequest.new(msg: 'hello!') }
 
           before do
             GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(request).to_return(response)
