@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'examples/hello/hello_services_pb'
+
 RSpec.describe GrpcMock::ActionStub do
   let(:stub_grpc_action) do
     described_class.new(path, action)
@@ -13,22 +15,17 @@ RSpec.describe GrpcMock::ActionStub do
     double(input: input_class, output: output_class)
   end
 
-  let(:input_class) { double }
-  let(:output_class) { double }
-
-  before do
-    allow(input_class).to receive(:new) { |arg| arg }
-    allow(output_class).to receive(:new) { |arg| arg }
-  end
+  let(:input_class) { Hello::HelloRequest }
+  let(:output_class) { Hello::HelloResponse }
 
   describe '#response' do
     let(:exception) { StandardError.new }
-    let(:value1) { { response1: "response1" } }
-    let(:value2) { { response2: "response2" } }
+    let(:value1) { { msg: "response 1" } }
+    let(:value2) { { msg: "response 2" } }
 
     it 'returns response' do
       stub_grpc_action.to_return(value1)
-      expect(stub_grpc_action.response.evaluate).to eq(value1)
+      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value1))
     end
 
     it 'raises exception' do
@@ -39,17 +36,17 @@ RSpec.describe GrpcMock::ActionStub do
     it 'returns responses in a sequence passed as array with multiple to_return calling' do
       stub_grpc_action.to_return(value1)
       stub_grpc_action.to_return(value2)
-      expect(stub_grpc_action.response.evaluate).to eq(value1)
-      expect(stub_grpc_action.response.evaluate).to eq(value2)
+      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value1))
+      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value2))
     end
 
     it 'repeats returning last response' do
       stub_grpc_action.to_return(value1)
       stub_grpc_action.to_return(value2)
-      expect(stub_grpc_action.response.evaluate).to eq(value1)
-      expect(stub_grpc_action.response.evaluate).to eq(value2)
-      expect(stub_grpc_action.response.evaluate).to eq(value2)
-      expect(stub_grpc_action.response.evaluate).to eq(value2)
+      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value1))
+      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value2))
+      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value2))
+      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value2))
     end
 
     context 'when not calling #to_return' do
@@ -61,11 +58,11 @@ RSpec.describe GrpcMock::ActionStub do
 
   describe '#with' do
     context "when hash params" do
-      let(:request) { { request: "request" } }
+      let(:request) { { msg: "request" } }
 
       it 'registers request', aggregate: true do
         expect(action).to receive(:input)
-        expect(input_class).to receive(:new).with(request)
+        expect(input_class).to receive(:new).with(request).and_call_original
 
         expect(stub_grpc_action.with(request)).to eq(stub_grpc_action)
       end
@@ -85,7 +82,7 @@ RSpec.describe GrpcMock::ActionStub do
 
   describe '#to_return' do
     context "when hash params" do
-      let(:response) { { response: "response" } }
+      let(:response) { { msg: "response" } }
 
       it 'registers response', aggregate: true do
         expect(action).to receive(:output)
