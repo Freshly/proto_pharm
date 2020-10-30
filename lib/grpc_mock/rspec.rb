@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'grpc_mock'
+require 'grpc_mock/dsl'
 
 RSpec.configure do |config|
   config.before(:suite) do
@@ -14,4 +15,6 @@ RSpec.configure do |config|
   config.after(:each) do
     GrpcMock.reset!
   end
+
+  config.include GrpcMock::DSL
 end
