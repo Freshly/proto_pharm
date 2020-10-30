@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'grpc_mock/request_stub'
+require 'grpc_mock/action_stub'
 require 'grpc_mock/matchers/request_including_matcher'
 
 module GrpcMock
@@ -8,6 +9,10 @@ module GrpcMock
     # @param path [String]
     def stub_request(path)
       GrpcMock.stub_registry.register_request_stub(GrpcMock::RequestStub.new(path))
+    end
+
+    def stub_grpc_action(path, rpc_action)
+      GrpcMock.stub_registry.register_request_stub(GrpcMock::ActionStub.new(path, rpc_action))
     end
 
     # @param values [Hash]

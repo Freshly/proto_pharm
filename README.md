@@ -46,7 +46,33 @@ GrpcMock.stub_request("/hello.hello/Hello").with(Hello::HelloRequest.new(msg: 'h
 
 client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
 client.hello(Hello::HelloRequest.new(msg: 'hello')) # => send a request to server
-client client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.new(msg: 'test') (without any requests to server)
+client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.new(msg: 'test') (without any requests to server)
+```
+
+### Stubbing per-action requests based on parametrized request
+
+```ruby
+rpc_action = OpenStruct.new(input: Hello::HelloRequest, output: Hello::HelloResponse)
+GrpcMock.stub_grpc_action("/hello.hello/Hello", rpc_action).with(msg: 'hi').to_return(msg: 'test')
+
+client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
+client.hello(Hello::HelloRequest.new(msg: 'hello')) # => send a request to server
+client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.new(msg: 'test') (without any requests to server)
+
+```
+
+### You can user either proto objects or hash for stubbing requests
+
+```ruby
+rpc_action = OpenStruct.new(input: Hello::HelloRequest, output: Hello::HelloResponse)
+
+GrpcMock.stub_grpc_action("/hello.hello/Hello", rpc_action).with(Hello::HelloRequest.new(msg: 'hi')).to_return(msg: 'test')
+# or
+GrpcMock.stub_grpc_action("/hello.hello/Hello", rpc_action).with(msg: 'hi').to_return(Hello::HelloResponse.new(msg: 'test'))
+
+client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
+client.hello(Hello::HelloRequest.new(msg: 'hello')) # => send a request to server
+client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.new(msg: 'test') (without any requests to server)
 ```
 
 ### Real requests to network can be allowed or disabled
@@ -91,4 +117,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/ganmac
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
