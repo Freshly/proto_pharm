@@ -2,8 +2,12 @@
 
 module GrpcMock
   module DSL
-    def stub_grpc_action(path, rpc_action)
-      GrpcMock.stub_registry.register_request_stub(GrpcMock::ActionStub.new(path, rpc_action))
+    delegate :stub_grpc_action, to: :grpc_mock
+
+    private
+
+    def grpc_mock
+      ::GrpcMock
     end
   end
 end
