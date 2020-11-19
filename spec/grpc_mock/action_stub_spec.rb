@@ -3,9 +3,7 @@
 require 'examples/hello/hello_services_pb'
 
 RSpec.describe GrpcMock::ActionStub do
-  let(:stub_grpc_action) do
-    described_class.new(path, action)
-  end
+  subject(:action_stub) { described_class.new(path, action) }
 
   let(:path) do
     '/service_name/method_name'
@@ -24,34 +22,34 @@ RSpec.describe GrpcMock::ActionStub do
     let(:value2) { { msg: "response 2" } }
 
     it 'returns response' do
-      stub_grpc_action.to_return(value1)
-      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value1))
+      action_stub.to_return(value1)
+      expect(action_stub.response.evaluate).to eq(output_class.new(value1))
     end
 
     it 'raises exception' do
-      stub_grpc_action.to_raise(exception)
-      expect { stub_grpc_action.response.evaluate }.to raise_error(StandardError)
+      action_stub.to_raise(exception)
+      expect { action_stub.response.evaluate }.to raise_error(StandardError)
     end
 
     it 'returns responses in a sequence passed as array with multiple to_return calling' do
-      stub_grpc_action.to_return(value1)
-      stub_grpc_action.to_return(value2)
-      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value1))
-      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value2))
+      action_stub.to_return(value1)
+      action_stub.to_return(value2)
+      expect(action_stub.response.evaluate).to eq(output_class.new(value1))
+      expect(action_stub.response.evaluate).to eq(output_class.new(value2))
     end
 
     it 'repeats returning last response' do
-      stub_grpc_action.to_return(value1)
-      stub_grpc_action.to_return(value2)
-      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value1))
-      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value2))
-      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value2))
-      expect(stub_grpc_action.response.evaluate).to eq(output_class.new(value2))
+      action_stub.to_return(value1)
+      action_stub.to_return(value2)
+      expect(action_stub.response.evaluate).to eq(output_class.new(value1))
+      expect(action_stub.response.evaluate).to eq(output_class.new(value2))
+      expect(action_stub.response.evaluate).to eq(output_class.new(value2))
+      expect(action_stub.response.evaluate).to eq(output_class.new(value2))
     end
 
     context 'when not calling #to_return' do
       it 'raises an error' do
-        expect { stub_grpc_action.response }.to raise_error(GrpcMock::NoResponseError)
+        expect { action_stub.response }.to raise_error(GrpcMock::NoResponseError)
       end
     end
   end
@@ -64,7 +62,7 @@ RSpec.describe GrpcMock::ActionStub do
         expect(action).to receive(:input)
         expect(input_class).to receive(:new).with(request).and_call_original
 
-        expect(stub_grpc_action.with(request)).to eq(stub_grpc_action)
+        expect(action_stub.with(request)).to eq(action_stub)
       end
     end
 
@@ -75,7 +73,7 @@ RSpec.describe GrpcMock::ActionStub do
         expect(action).not_to receive(:input)
         expect(input_class).not_to receive(:new).with(request)
 
-        expect(stub_grpc_action.with(request)).to eq(stub_grpc_action)
+        expect(action_stub.with(request)).to eq(action_stub)
       end
     end
   end
@@ -89,7 +87,7 @@ RSpec.describe GrpcMock::ActionStub do
         expect(output_class).to receive(:new).with(response)
 
         expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value]).once
-        expect(stub_grpc_action.to_return(response)).to eq(stub_grpc_action)
+        expect(action_stub.to_return(response)).to eq(action_stub)
       end
     end
 
@@ -101,7 +99,7 @@ RSpec.describe GrpcMock::ActionStub do
         expect(output_class).not_to receive(:new).with(response)
 
         expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value]).once
-        expect(stub_grpc_action.to_return(response)).to eq(stub_grpc_action)
+        expect(action_stub.to_return(response)).to eq(action_stub)
       end
     end
   end
@@ -111,7 +109,7 @@ RSpec.describe GrpcMock::ActionStub do
       let(:exception) { 'string' }
       it 'registers exception' do
         expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue]).once
-        expect(stub_grpc_action.to_raise(exception)).to eq(stub_grpc_action)
+        expect(action_stub.to_raise(exception)).to eq(action_stub)
       end
     end
 
@@ -119,7 +117,7 @@ RSpec.describe GrpcMock::ActionStub do
       let(:response) { StandardError }
       it 'registers exception' do
         expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue]).once
-        expect(stub_grpc_action.to_raise(response)).to eq(stub_grpc_action)
+        expect(action_stub.to_raise(response)).to eq(action_stub)
       end
     end
 
@@ -127,14 +125,14 @@ RSpec.describe GrpcMock::ActionStub do
       let(:response) { StandardError.new('message') }
       it 'registers exception' do
         expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue]).once
-        expect(stub_grpc_action.to_raise(response)).to eq(stub_grpc_action)
+        expect(action_stub.to_raise(response)).to eq(action_stub)
       end
     end
 
     context 'with invalid value (integer)' do
       let(:response) { 1 }
       it 'raises ArgumentError' do
-        expect { stub_grpc_action.to_raise(response) }.to raise_error(ArgumentError)
+        expect { action_stub.to_raise(response) }.to raise_error(ArgumentError)
       end
     end
 
@@ -142,12 +140,12 @@ RSpec.describe GrpcMock::ActionStub do
       let(:exception) { StandardError.new('message') }
       it 'registers exceptions' do
         expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue, GrpcMock::Response::ExceptionValue]).once
-        expect(stub_grpc_action.to_raise(exception, exception)).to eq(stub_grpc_action)
+        expect(action_stub.to_raise(exception, exception)).to eq(action_stub)
       end
     end
   end
 
   describe '#match?' do
-    it { expect(stub_grpc_action.match?(path, double(:request))).to eq(true) }
+    it { expect(action_stub.match?(path, double(:request))).to eq(true) }
   end
 end
