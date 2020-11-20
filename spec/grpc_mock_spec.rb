@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'examples/hello/hello_client'
-require 'examples/request/request_services_pb'
+require_relative 'examples/hello/hello_client'
+require_relative 'examples/request/request_services_pb'
 
 RSpec.describe GrpcMock do
   let(:client) do
