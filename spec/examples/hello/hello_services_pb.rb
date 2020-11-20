@@ -2,7 +2,8 @@
 # Source: hello.proto for package 'hello'
 
 require 'grpc'
-require 'examples/hello/hello_pb'
+
+require_relative './hello_pb'
 
 module Hello
   module Hello

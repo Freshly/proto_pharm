@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'examples/hello/hello_client'
-require 'examples/request/request_services_pb'
+require_relative 'examples/hello/hello_client'
+require_relative 'examples/request/request_services_pb'
 
 RSpec.describe GrpcMock do
   let(:client) do
@@ -15,12 +15,16 @@ RSpec.describe GrpcMock do
     described_class.reset!
   end
 
-  describe '.enable!' do
+  shared_context "with disabled network connections" do
     around do |blk|
       described_class.disable_net_connect!
       blk.call
       described_class.allow_net_connect!
     end
+  end
+
+  describe '.enable!' do
+    include_context "with disabled network connections"
 
     it { expect { client.send_message('hello!') } .to raise_error(GrpcMock::NetConnectNotAllowedError) }
 
@@ -96,6 +100,8 @@ RSpec.describe GrpcMock do
     end
 
     describe '.with' do
+      include_context "with disabled network connections"
+
       context "when passed param is hash" do
         let(:request_params) { { msg: 'hello!' } }
         let(:response_params) { { msg: 'test' } }
@@ -129,7 +135,7 @@ RSpec.describe GrpcMock do
             GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(**request_params).to_return(**response_params)
           end
 
-          it { expect { client.send_message('hello2!') }.to raise_error(GRPC::Unavailable) }
+          it { expect { client.send_message('hello2!') }.to raise_error(GrpcMock::NetConnectNotAllowedError) }
         end
       end
 
@@ -164,13 +170,15 @@ RSpec.describe GrpcMock do
             GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(request).to_return(response)
           end
 
-          it { expect { client.send_message('hello2!') }.to raise_error(GRPC::Unavailable) }
+          it { expect { client.send_message('hello2!') }.to raise_error(GrpcMock::NetConnectNotAllowedError) }
         end
       end
     end
   end
 
   describe '.stub_request' do
+    include_context "with disabled network connections"
+
     context 'with to_return' do
       let(:response) { Hello::HelloResponse.new(msg: 'test') }
 
@@ -234,7 +242,7 @@ RSpec.describe GrpcMock do
           GrpcMock.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello!')).to_return(response)
         end
 
-        it { expect { client.send_message('hello2!') }.to raise_error(GRPC::Unavailable) }
+        it { expect { client.send_message('hello2!') }.to raise_error(GrpcMock::NetConnectNotAllowedError) }
       end
     end
   end

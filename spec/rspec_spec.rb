@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'examples/hello/hello_client'
+require_relative 'examples/hello/hello_client'
 
 RSpec.describe 'grpc_mock/rspec' do
   require 'grpc_mock/rspec'
