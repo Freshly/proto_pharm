@@ -52,8 +52,7 @@ client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.ne
 ### Stubbing per-action requests based on parametrized request
 
 ```ruby
-rpc_action = OpenStruct.new(input: Hello::HelloRequest, output: Hello::HelloResponse)
-GrpcMock.stub_grpc_action("/hello.hello/Hello", rpc_action).with(msg: 'hi').to_return(msg: 'test')
+GrpcMock.stub_grpc_action(Hello::Hello::Service, :Hello).with(msg: 'hi').to_return(msg: 'test')
 
 client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
 client.hello(Hello::HelloRequest.new(msg: 'hello')) # => send a request to server
@@ -64,11 +63,9 @@ client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.ne
 ### You can user either proto objects or hash for stubbing requests
 
 ```ruby
-rpc_action = OpenStruct.new(input: Hello::HelloRequest, output: Hello::HelloResponse)
-
-GrpcMock.stub_grpc_action("/hello.hello/Hello", rpc_action).with(Hello::HelloRequest.new(msg: 'hi')).to_return(msg: 'test')
+GrpcMock.stub_grpc_action(Hello::Hello::Service, :Hello).with(Hello::HelloRequest.new(msg: 'hi')).to_return(msg: 'test')
 # or
-GrpcMock.stub_grpc_action("/hello.hello/Hello", rpc_action).with(msg: 'hi').to_return(Hello::HelloResponse.new(msg: 'test'))
+GrpcMock.stub_grpc_action(Hello::Hello::Service, :Hello).with(msg: 'hi').to_return(Hello::HelloResponse.new(msg: 'test'))
 
 client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
 client.hello(Hello::HelloRequest.new(msg: 'hello')) # => send a request to server
