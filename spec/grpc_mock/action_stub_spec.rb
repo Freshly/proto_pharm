@@ -145,6 +145,8 @@ RSpec.describe GrpcMock::ActionStub do
   end
 
   describe '#match?' do
-    it { expect(action_stub).to be_match(path, double(:request)) }
+    subject { action_stub.match?(path, double) }
+
+    it { is_expected.to be true }
   end
 end
