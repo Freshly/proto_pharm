@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/module'
+
 module GrpcMock
   class ActionStub < RequestStub
-    attr_reader :rpc_action
+    attr_reader :service, :action
 
     # @param path [String] gRPC path like /${service_name}/${method_name}
-    # @param rpc_action [GRPC::RpcDesc] instance with parameters like +name+, +input+, +output+ and others
-    def initialize(path, rpc_action)
-      @rpc_action = rpc_action
+    # @param action [GRPC::RpcDesc] instance with parameters like +name+, +input+, +output+ and others
+    def initialize(service, action)
+      @service = service
+      @action = action
 
       super(path)
     end
@@ -26,12 +29,30 @@ module GrpcMock
 
     private
 
+    delegate :service_name, :rpc_descs, to: :grpc_service
+
+    def grpc_service
+      service.const_defined?(:Service) ? service::Service : service
+    end
+
+    def endpoint_name
+      @endpoint_name ||= rpc_descs.key?(action) ? action : action.to_s.camelize.to_sym
+    end
+
+    def rpc_desc
+      rpc_descs[endpoint_name]
+    end
+
+    def path
+      "/#{service_name}/#{endpoint_name}"
+    end
+
     def input_type
-      rpc_action.input
+      rpc_desc.input
     end
 
     def output_type
-      rpc_action.output
+      rpc_desc.output
     end
   end
 end
