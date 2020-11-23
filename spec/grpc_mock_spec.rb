@@ -46,9 +46,8 @@ RSpec.describe GrpcMock do
   end
 
   describe '.stub_grpc_action' do
-    let(:action) do
-      double(input: Hello::HelloRequest, output: Hello::HelloResponse)
-    end
+    let(:service) { Hello::Hello }
+    let(:action) { :Hello }
 
     context 'with #to_return' do
       shared_examples_for "returns response" do
@@ -70,7 +69,7 @@ RSpec.describe GrpcMock do
 
         before do
           described_class.enable!
-          GrpcMock.stub_grpc_action('/hello.hello/Hello', action).to_return(**params)
+          GrpcMock.stub_grpc_action(service, action).to_return(**params)
         end
 
         it_behaves_like "returns response"
@@ -81,7 +80,7 @@ RSpec.describe GrpcMock do
 
         before do
           described_class.enable!
-          GrpcMock.stub_grpc_action('/hello.hello/Hello', action).to_return(response)
+          GrpcMock.stub_grpc_action(service, action).to_return(response)
         end
 
         it_behaves_like "returns response"
@@ -93,7 +92,7 @@ RSpec.describe GrpcMock do
 
       before do
         described_class.enable!
-        GrpcMock.stub_grpc_action('/hello.hello/Hello', action).to_raise(exception)
+        GrpcMock.stub_grpc_action(service, action).to_raise(exception)
       end
 
       it { expect { client.send_message('hello!') }.to raise_error(exception.class) }
@@ -109,7 +108,7 @@ RSpec.describe GrpcMock do
 
         context 'with equal request' do
           before do
-            GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(**request_params).to_return(**response_params)
+            GrpcMock.stub_grpc_action(service, action).with(**request_params).to_return(**response_params)
           end
 
           it { expect(client.send_message('hello!')).to eq(response) }
@@ -119,7 +118,7 @@ RSpec.describe GrpcMock do
             let(:response2) { Hello::HelloResponse.new(response_params2) }
 
             before do
-              GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(**request_params).to_return(**response_params2)
+              GrpcMock.stub_grpc_action(service, action).with(**request_params).to_return(**response_params2)
             end
 
             it 'returns newest result' do
@@ -132,7 +131,7 @@ RSpec.describe GrpcMock do
           let(:request_params) { { msg: 'hello!' } }
 
           before do
-            GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(**request_params).to_return(**response_params)
+            GrpcMock.stub_grpc_action(service, action).with(**request_params).to_return(**response_params)
           end
 
           it { expect { client.send_message('hello2!') }.to raise_error(GrpcMock::NetConnectNotAllowedError) }
@@ -145,7 +144,7 @@ RSpec.describe GrpcMock do
 
         context 'with equal request' do
           before do
-            GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(request).to_return(response)
+            GrpcMock.stub_grpc_action(service, action).with(request).to_return(response)
           end
 
           it { expect(client.send_message('hello!')).to eq(response) }
@@ -154,7 +153,7 @@ RSpec.describe GrpcMock do
             let(:response2) { Hello::HelloResponse.new(msg: 'test2') }
 
             before do
-              GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(request).to_return(response2)
+              GrpcMock.stub_grpc_action(service, action).with(request).to_return(response2)
             end
 
             it 'returns newest result' do
@@ -167,7 +166,7 @@ RSpec.describe GrpcMock do
           let(:request) { Hello::HelloRequest.new(msg: 'hello!') }
 
           before do
-            GrpcMock.stub_grpc_action('/hello.hello/Hello', action).with(request).to_return(response)
+            GrpcMock.stub_grpc_action(service, action).with(request).to_return(response)
           end
 
           it { expect { client.send_message('hello2!') }.to raise_error(GrpcMock::NetConnectNotAllowedError) }
