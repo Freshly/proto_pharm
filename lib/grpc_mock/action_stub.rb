@@ -15,7 +15,7 @@ module GrpcMock
       @service = service
       @action = action
 
-      super(path)
+      super(grpc_path)
     end
 
     # @param proto [Object] request proto object
@@ -24,7 +24,7 @@ module GrpcMock
       return super(input_type.new(**request)) if proto.blank?
       return super(input_type.new(**proto)) if proto.respond_to?(:to_hash)
 
-      raise InvalidProtoType, "Invalid proto type #{proto.class} for #{path}, expected #{input_type}" unless proto.class == input_type
+      raise InvalidProtoType, "Invalid proto type #{proto.class} for #{grpc_path}, expected #{input_type}" unless proto.class == input_type
 
       super(proto)
     end
@@ -35,7 +35,7 @@ module GrpcMock
       return super(output_type.new(**response)) if proto.blank?
       return super(output_type.new(**proto)) if proto.respond_to?(:to_hash)
 
-      raise InvalidProtoType, "Invalid proto type #{proto.class} for #{path}, expected #{output_type}" unless proto.class == output_type
+      raise InvalidProtoType, "Invalid proto type #{proto.class} for #{grpc_path}, expected #{output_type}" unless proto.class == output_type
 
       super(proto)
     end
@@ -56,7 +56,7 @@ module GrpcMock
       rpc_descs[endpoint_name]
     end
 
-    def path
+    def grpc_path
       "/#{service_name}/#{endpoint_name}"
     end
 
