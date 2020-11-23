@@ -9,8 +9,8 @@ module GrpcMock
 
     attr_reader :service, :action
 
-    # @param path [String] gRPC path like /${service_name}/${method_name}
-    # @param action [GRPC::RpcDesc] instance with parameters like +name+, +input+, +output+ and others
+    # @param service [GRPC::GenericService] gRPC service class representing the the service being stubbed
+    # @param action [String, Symbol] name of the endpoint being stubbed
     def initialize(service, action)
       @service = service
       @action = action
