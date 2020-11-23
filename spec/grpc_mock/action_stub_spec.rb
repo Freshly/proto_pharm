@@ -57,48 +57,87 @@ RSpec.describe GrpcMock::ActionStub do
   end
 
   describe '#with' do
-    context "when hash params" do
-      let(:request) { { msg: "request" } }
+    before { allow(input_class).to receive(:new).and_call_original }
+
+    context 'with a hash' do
+      let(:request) { { msg: 'request' } }
 
       it 'registers request', aggregate: true do
-        expect(input_class).to receive(:new).with(request).and_call_original
 
         expect(action_stub.with(request)).to eq(action_stub)
+        expect(input_class).to have_received(:new).with(request)
       end
     end
 
-    context "when proto object" do
-      let(:request) { :request }
+    context 'with kwargs' do
+      let(:request) { { msg: 'Hello?' } }
 
       it 'registers request', aggregate: true do
-        expect(input_class).not_to receive(:new).with(request)
+        expect(action_stub.with(**request)).to eq(action_stub)
+        expect(input_class).to have_received(:new).with(request)
+      end
+    end
 
+    context 'with a proto object' do
+      let(:request) { input_class.new(msg: 'hello?') }
+
+      it 'registers request', aggregate: true do
         expect(action_stub.with(request)).to eq(action_stub)
+      end
+
+      context 'with wrong proto class' do
+        let(:request) { output_class.new(msg: 'hello?') }
+
+        it 'raises InvalidProtoType' do
+          expect { expect(action_stub.with(request)) }.to raise_error described_class::InvalidProtoType
+        end
       end
     end
   end
 
   describe '#to_return' do
-    context "when hash params" do
-      let(:response) { { msg: "response" } }
+    before { allow(GrpcMock::ResponsesSequence).to receive(:new).and_call_original }
+
+    context 'with a hash' do
+      let(:response) { { msg: 'Hello!' } }
 
       it 'registers response', aggregate: true do
         expect(output_class).to receive(:new).with(response)
 
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value]).once
         expect(action_stub.to_return(response)).to eq(action_stub)
+
+        expect(GrpcMock::ResponsesSequence).to have_received(:new).with([GrpcMock::Response::Value]).once
       end
     end
 
-    context "when proto object" do
-      let(:response) { :response }
+    context 'with kwargs' do
+      let(:response) { { msg: 'Hello!' } }
+      it 'registers response', aggregate: true do
+        expect(output_class).to receive(:new).with(**response)
+
+        expect(action_stub.to_return(**response)).to eq(action_stub)
+
+        expect(GrpcMock::ResponsesSequence).to have_received(:new).with([GrpcMock::Response::Value]).once
+      end
+    end
+
+    context 'with a proto object' do
+      let(:response) { output_class.new(msg: 'Hello!') }
 
       it 'registers response', aggregate: true do
-        expect(action).not_to receive(:output)
         expect(output_class).not_to receive(:new).with(response)
 
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value]).once
         expect(action_stub.to_return(response)).to eq(action_stub)
+
+        expect(GrpcMock::ResponsesSequence).to have_received(:new).with([GrpcMock::Response::Value]).once
+      end
+
+      context 'with wrong proto class' do
+        let(:response) { input_class.new(msg: 'hello?') }
+
+        it 'raises InvalidProtoType' do
+          expect { expect(action_stub.to_return(response)) }.to raise_error described_class::InvalidProtoType
+        end
       end
     end
   end

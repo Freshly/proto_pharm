@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/module'
+require 'active_support/core_ext/object'
 
 module GrpcMock
   class ActionStub < RequestStub
+    class InvalidProtoType < StandardError; end
+
     attr_reader :service, :action
 
     # @param path [String] gRPC path like /${service_name}/${method_name}
@@ -18,13 +21,23 @@ module GrpcMock
     # @param proto [Object] request proto object
     # @param request [Hash] parameters for request
     def with(proto = nil, **request)
-      proto ? super(proto) : super(input_type.new(request))
+      return super(input_type.new(**request)) if proto.blank?
+      return super(input_type.new(**proto)) if proto.respond_to?(:to_hash)
+
+      raise InvalidProtoType, "Invalid proto type #{proto.class} for #{path}, expected #{input_type}" unless proto.class == input_type
+
+      super(proto)
     end
 
     # @param proto [Object] response proto object
     # @param response [Hash] parameters to respond with
     def to_return(proto = nil, **response)
-      proto ? super(proto) : super(output_type.new(response))
+      return super(output_type.new(**response)) if proto.blank?
+      return super(output_type.new(**proto)) if proto.respond_to?(:to_hash)
+
+      raise InvalidProtoType, "Invalid proto type #{proto.class} for #{path}, expected #{output_type}" unless proto.class == output_type
+
+      super(proto)
     end
 
     private
