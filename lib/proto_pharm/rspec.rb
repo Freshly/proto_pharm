@@ -5,16 +5,16 @@ require 'proto_pharm/dsl'
 
 RSpec.configure do |config|
   config.before(:suite) do
-    GrpcMock.enable!
+    ProtoPharm.enable!
   end
 
   config.after(:suite) do
-    GrpcMock.disable!
+    ProtoPharm.disable!
   end
 
   config.after(:each) do
-    GrpcMock.reset!
+    ProtoPharm.reset!
   end
 
-  config.include GrpcMock::DSL
+  config.include ProtoPharm::DSL
 end

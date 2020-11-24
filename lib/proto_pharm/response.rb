@@ -10,7 +10,7 @@ module ProtoPharm
                      when String
                        StandardError.new(exception)
                      when Class
-                       exception.new('Exception from GrpcMock')
+                       exception.new('Exception from ProtoPharm')
                      when Exception
                        exception
                      else

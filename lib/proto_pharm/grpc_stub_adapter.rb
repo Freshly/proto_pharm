@@ -8,9 +8,9 @@ module ProtoPharm
   class GrpcStubAdapter
     module MockStub
       def request_response(method, request, *args, **opts)
-        return super unless GrpcMock::GrpcStubAdapter.enabled?
+        return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
-        mock = GrpcMock.stub_registry.response_for_request(method, request)
+        mock = ProtoPharm.stub_registry.response_for_request(method, request)
 
         if mock
           if opts[:return_op]
@@ -18,7 +18,7 @@ module ProtoPharm
           else
             mock.evaluate
           end
-        elsif GrpcMock.config.allow_net_connect
+        elsif ProtoPharm.config.allow_net_connect
           super
         else
           raise NetConnectNotAllowedError, method
@@ -27,15 +27,15 @@ module ProtoPharm
 
       # TODO
       def client_streamer(method, requests, *args)
-        unless GrpcMock::GrpcStubAdapter.enabled?
+        unless ProtoPharm::GrpcStubAdapter.enabled?
           return super
         end
 
         r = requests.to_a       # FIXME: this may not work
-        mock = GrpcMock.stub_registry.response_for_request(method, r)
+        mock = ProtoPharm.stub_registry.response_for_request(method, r)
         if mock
           mock.evaluate
-        elsif GrpcMock.config.allow_net_connect
+        elsif ProtoPharm.config.allow_net_connect
           super
         else
           raise NetConnectNotAllowedError, method
@@ -43,14 +43,14 @@ module ProtoPharm
       end
 
       def server_streamer(method, request, *args)
-        unless GrpcMock::GrpcStubAdapter.enabled?
+        unless ProtoPharm::GrpcStubAdapter.enabled?
           return super
         end
 
-        mock = GrpcMock.stub_registry.response_for_request(method, request)
+        mock = ProtoPharm.stub_registry.response_for_request(method, request)
         if mock
           mock.evaluate
-        elsif GrpcMock.config.allow_net_connect
+        elsif ProtoPharm.config.allow_net_connect
           super
         else
           raise NetConnectNotAllowedError, method
@@ -58,15 +58,15 @@ module ProtoPharm
       end
 
       def bidi_streamer(method, requests, *args)
-        unless GrpcMock::GrpcStubAdapter.enabled?
+        unless ProtoPharm::GrpcStubAdapter.enabled?
           return super
         end
 
         r = requests.to_a       # FIXME: this may not work
-        mock = GrpcMock.stub_registry.response_for_request(method, r)
+        mock = ProtoPharm.stub_registry.response_for_request(method, r)
         if mock
           mock.evaluate
-        elsif GrpcMock.config.allow_net_connect
+        elsif ProtoPharm.config.allow_net_connect
           super
         else
           raise NetConnectNotAllowedError, method
@@ -87,11 +87,11 @@ module ProtoPharm
     end
 
     def enable!
-      GrpcMock::GrpcStubAdapter.enable!
+      ProtoPharm::GrpcStubAdapter.enable!
     end
 
     def disable!
-      GrpcMock::GrpcStubAdapter.disable!
+      ProtoPharm::GrpcStubAdapter.disable!
     end
   end
 end

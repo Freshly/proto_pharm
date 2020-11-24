@@ -10,7 +10,7 @@ module ProtoPharm
       @request_stubs = []
     end
 
-    # @param stub [GrpcMock::RequestStub]
+    # @param stub [ProtoPharm::RequestStub]
     def register_request_stub(stub)
       @request_stubs.unshift(stub)
       stub

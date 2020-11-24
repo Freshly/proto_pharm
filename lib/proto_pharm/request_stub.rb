@@ -22,19 +22,19 @@ module ProtoPharm
 
     def to_return(*values)
       responses = [*values].flatten.map { |v| Response::Value.new(v) }
-      @response_sequence << GrpcMock::ResponsesSequence.new(responses)
+      @response_sequence << ProtoPharm::ResponsesSequence.new(responses)
       self
     end
 
     def to_raise(*exceptions)
       responses = [*exceptions].flatten.map { |e| Response::ExceptionValue.new(e) }
-      @response_sequence << GrpcMock::ResponsesSequence.new(responses)
+      @response_sequence << ProtoPharm::ResponsesSequence.new(responses)
       self
     end
 
     def response
       if @response_sequence.empty?
-        raise GrpcMock::NoResponseError, 'Must be set some values by using #GrpMock::RequestStub#to_run'
+        raise ProtoPharm::NoResponseError, 'Must be set some values by using #GrpMock::RequestStub#to_run'
       elsif @response_sequence.size == 1
         @response_sequence.first.next
       else

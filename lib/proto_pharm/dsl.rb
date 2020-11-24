@@ -9,7 +9,7 @@ module ProtoPharm
     private
 
     def proto_pharm
-      ::GrpcMock
+      ::ProtoPharm
     end
   end
 end

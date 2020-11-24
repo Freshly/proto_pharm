@@ -6,7 +6,7 @@ require 'proto_pharm/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'proto_pharm'
-  spec.version       = GrpcMock::VERSION
+  spec.version       = ProtoPharm::VERSION
   spec.authors       = ['Yuta Iwama', 'Allen Rettberg']
   spec.email         = ['ganmacs@gmail.com', 'allen.rettberg@freshly.com']
 
