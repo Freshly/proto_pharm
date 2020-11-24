@@ -100,7 +100,7 @@ RSpec.describe GrpcMock do
 
     context 'with to_fail_with' do
       let(:message) { Faker::ChuckNorris.fact }
-      let(:metadata) { Hash[Faker::Hipster.unique.words(4).map(&:to_sym)] }
+      let(:metadata) { Hash[*Faker::Hipster.unique.words(number: 4).map(&:to_sym)] }
 
       before do
         described_class.enable!
