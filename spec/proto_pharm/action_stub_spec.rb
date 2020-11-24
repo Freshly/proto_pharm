@@ -2,7 +2,7 @@
 
 require 'examples/hello/hello_services_pb'
 
-RSpec.describe GrpcMock::ActionStub do
+RSpec.describe ProtoPharm::ActionStub do
   subject(:action_stub) { described_class.new(service, endpoint) }
 
   let(:service) { Hello::Hello::Service }
@@ -45,7 +45,7 @@ RSpec.describe GrpcMock::ActionStub do
 
     context 'when not calling #to_return' do
       it 'raises an error' do
-        expect { action_stub.response }.to raise_error(GrpcMock::NoResponseError)
+        expect { action_stub.response }.to raise_error(ProtoPharm::NoResponseError)
       end
     end
   end
@@ -89,7 +89,7 @@ RSpec.describe GrpcMock::ActionStub do
   end
 
   describe '#to_return' do
-    before { allow(GrpcMock::ResponsesSequence).to receive(:new).and_call_original }
+    before { allow(ProtoPharm::ResponsesSequence).to receive(:new).and_call_original }
 
     context 'with a hash' do
       let(:response) { { msg: 'Hello!' } }
@@ -99,7 +99,7 @@ RSpec.describe GrpcMock::ActionStub do
 
         expect(action_stub.to_return(response)).to eq(action_stub)
 
-        expect(GrpcMock::ResponsesSequence).to have_received(:new).with([GrpcMock::Response::Value]).once
+        expect(ProtoPharm::ResponsesSequence).to have_received(:new).with([ProtoPharm::Response::Value]).once
       end
     end
 
@@ -110,7 +110,7 @@ RSpec.describe GrpcMock::ActionStub do
 
         expect(action_stub.to_return(**response)).to eq(action_stub)
 
-        expect(GrpcMock::ResponsesSequence).to have_received(:new).with([GrpcMock::Response::Value]).once
+        expect(ProtoPharm::ResponsesSequence).to have_received(:new).with([ProtoPharm::Response::Value]).once
       end
     end
 
@@ -122,7 +122,7 @@ RSpec.describe GrpcMock::ActionStub do
 
         expect(action_stub.to_return(response)).to eq(action_stub)
 
-        expect(GrpcMock::ResponsesSequence).to have_received(:new).with([GrpcMock::Response::Value]).once
+        expect(ProtoPharm::ResponsesSequence).to have_received(:new).with([ProtoPharm::Response::Value]).once
       end
 
       context 'with wrong proto class' do
@@ -139,7 +139,7 @@ RSpec.describe GrpcMock::ActionStub do
     context 'with string' do
       let(:exception) { 'string' }
       it 'registers exception' do
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue]).once
+        expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue]).once
         expect(action_stub.to_raise(exception)).to eq(action_stub)
       end
     end
@@ -147,7 +147,7 @@ RSpec.describe GrpcMock::ActionStub do
     context 'with class' do
       let(:response) { StandardError }
       it 'registers exception' do
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue]).once
+        expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue]).once
         expect(action_stub.to_raise(response)).to eq(action_stub)
       end
     end
@@ -155,7 +155,7 @@ RSpec.describe GrpcMock::ActionStub do
     context 'with exception instance' do
       let(:response) { StandardError.new('message') }
       it 'registers exception' do
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue]).once
+        expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue]).once
         expect(action_stub.to_raise(response)).to eq(action_stub)
       end
     end
@@ -170,7 +170,7 @@ RSpec.describe GrpcMock::ActionStub do
     context 'with multi exceptions' do
       let(:exception) { StandardError.new('message') }
       it 'registers exceptions' do
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue, GrpcMock::Response::ExceptionValue]).once
+        expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue, ProtoPharm::Response::ExceptionValue]).once
         expect(action_stub.to_raise(exception, exception)).to eq(action_stub)
       end
     end

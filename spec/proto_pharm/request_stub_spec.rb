@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe GrpcMock::RequestStub do
+RSpec.describe ProtoPharm::RequestStub do
   let(:stub_request) do
     described_class.new(path)
   end
@@ -49,7 +49,7 @@ RSpec.describe GrpcMock::RequestStub do
 
     context 'when not calling #to_return' do
       it 'raises an error' do
-        expect { stub_request.response }.to raise_error(GrpcMock::NoResponseError)
+        expect { stub_request.response }.to raise_error(ProtoPharm::NoResponseError)
       end
     end
   end
@@ -58,12 +58,12 @@ RSpec.describe GrpcMock::RequestStub do
     let(:response) { double(:response) }
 
     it 'registers response' do
-      expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value]).once
+      expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::Value]).once
       expect(stub_request.to_return(response)).to eq(stub_request)
     end
 
     it 'registers multi responses' do
-      expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::Value, GrpcMock::Response::Value]).once
+      expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::Value, ProtoPharm::Response::Value]).once
       expect(stub_request.to_return(response, response)).to eq(stub_request)
     end
   end
@@ -72,7 +72,7 @@ RSpec.describe GrpcMock::RequestStub do
     context 'with string' do
       let(:exception) { 'string' }
       it 'registers exception' do
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue]).once
+        expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue]).once
         expect(stub_request.to_raise(exception)).to eq(stub_request)
       end
     end
@@ -80,7 +80,7 @@ RSpec.describe GrpcMock::RequestStub do
     context 'with class' do
       let(:response) { StandardError }
       it 'registers exception' do
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue]).once
+        expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue]).once
         expect(stub_request.to_raise(response)).to eq(stub_request)
       end
     end
@@ -88,7 +88,7 @@ RSpec.describe GrpcMock::RequestStub do
     context 'with exception instance' do
       let(:response) { StandardError.new('message') }
       it 'registers exception' do
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue]).once
+        expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue]).once
         expect(stub_request.to_raise(response)).to eq(stub_request)
       end
     end
@@ -103,7 +103,7 @@ RSpec.describe GrpcMock::RequestStub do
     context 'with multi exceptions' do
       let(:exception) { StandardError.new('message') }
       it 'registers exceptions' do
-        expect(GrpcMock::ResponsesSequence).to receive(:new).with([GrpcMock::Response::ExceptionValue, GrpcMock::Response::ExceptionValue]).once
+        expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue, ProtoPharm::Response::ExceptionValue]).once
         expect(stub_request.to_raise(exception, exception)).to eq(stub_request)
       end
     end

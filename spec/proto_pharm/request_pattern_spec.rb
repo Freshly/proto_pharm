@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe GrpcMock::RequestPattern do
+RSpec.describe ProtoPharm::RequestPattern do
   let(:request_pattern) do
     described_class.new(path)
   end

@@ -25,7 +25,7 @@ module ProtoPharm
 
       def initialize(expected)
         @expected = Hash[
-          GrpcMock::Matchers::HashArgumentMatcher.stringify_keys!(expected, deep: true).sort,
+          ProtoPharm::Matchers::HashArgumentMatcher.stringify_keys!(expected, deep: true).sort,
         ]
       end
 

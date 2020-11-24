@@ -2,7 +2,7 @@
 
 require 'proto_pharm/matchers/request_including_matcher'
 
-RSpec.describe GrpcMock::Matchers::RequestIncludingMatcher do
+RSpec.describe ProtoPharm::Matchers::RequestIncludingMatcher do
   let(:matcher) do
     described_class.new(values)
   end

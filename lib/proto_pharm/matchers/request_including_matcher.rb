@@ -10,7 +10,7 @@ module ProtoPharm
           actual = actual.to_h
         end
 
-        actual = Hash[GrpcMock::Matchers::HashArgumentMatcher.stringify_keys!(actual, deep: true)]
+        actual = Hash[ProtoPharm::Matchers::HashArgumentMatcher.stringify_keys!(actual, deep: true)]
         super { |key, value| inner_including(value, key, actual) }
       rescue NoMethodError
         false
