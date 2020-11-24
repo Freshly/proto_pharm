@@ -40,5 +40,4 @@ module ProtoPharm
   GRPC::ClientStub.prepend GrpcStubAdapter::MockStub
 end
 
-
-# TODO: deprecate constant GrpcMock
+GrpcMock = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('GrpcMock', 'ProtoPharm')
