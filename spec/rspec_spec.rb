@@ -15,7 +15,7 @@ RSpec.describe 'grpc_mock/rspec' do
   end
 
   context 'when request_response' do
-    it { expect { client.send_message('hello!') } .to raise_error(GRPC::Unavailable) }
+    it { expect { client.send_message('hello!') }.to raise_error(GRPC::Unavailable) }
   end
 
   context 'when server_stream' do
@@ -36,7 +36,7 @@ RSpec.describe 'grpc_mock/rspec' do
     end
 
     context 'when request_response' do
-      it { expect { client.send_message('hello!') } .to raise_error(GrpcMock::NetConnectNotAllowedError) }
+      it { expect { client.send_message('hello!') }.to raise_error(GrpcMock::NetConnectNotAllowedError) }
     end
 
     context 'when server_stream' do
@@ -58,7 +58,7 @@ RSpec.describe 'grpc_mock/rspec' do
       end
 
       context 'when request_response' do
-        it { expect { client.send_message('hello!') } .to raise_error(GRPC::Unavailable) }
+        it { expect { client.send_message('hello!') }.to raise_error(GRPC::Unavailable) }
       end
 
       context 'when server_stream' do
@@ -79,7 +79,7 @@ RSpec.describe 'grpc_mock/rspec' do
         end
 
         context 'when request_response' do
-          it { expect { client.send_message('hello!') } .to raise_error(GrpcMock::NetConnectNotAllowedError) }
+          it { expect { client.send_message('hello!') }.to raise_error(GrpcMock::NetConnectNotAllowedError) }
         end
 
         context 'when server_stream' do
