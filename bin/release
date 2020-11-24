@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
 
-require_relative "../lib/grpc_mock/version"
+require_relative "../lib/proto_pharm/version"
 
 current_branch = `git rev-parse --abbrev-ref HEAD`.strip
 
-unless current_branch == "master" || GrpcMock::VERSION =~ %r{\.pre\d*\z}
+unless current_branch == "master" || ProtoPharm::VERSION =~ %r{\.pre\d*\z}
   puts "Can only release from the master branch 😿"
   exit 1
 end
 
-system "git tag v#{GrpcMock::VERSION}"
+system "git tag v#{ProtoPharm::VERSION}"
 
 system "git push --tag"
 

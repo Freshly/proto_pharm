@@ -1,13 +1,15 @@
-# GrpcMock [![Build Status](https://travis-ci.org/ganmacs/grpc_mock.svg?branch=master)](https://travis-ci.org/ganmacs/grpc_mock)
+# ProtoPharm
 
-Library for stubbing grpc in Ruby.
+Stub your gRPCs with lab-grown proto objects. Life is better on the pharm.
+
+Built on a great foundation by @ganmacs at [ganmacs/grpc_mock](https://github.com/ganmacs/grpc_mock).
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile in the development/test group:
 
 ```ruby
-gem 'grpc_mock'
+gem 'proto_pharm'
 ```
 
 And then execute:
@@ -16,24 +18,24 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install grpc_mock
+    $ gem install proto_pharm
 
 ## Usage
 
 If you use [RSpec](https://github.com/rspec/rspec), add the following code to spec/spec_helper.rb:
 
 ```ruby
-require 'grpc_mock/rspec'
+require 'proto_pharm/rspec'
 ```
 
 ## Examples
 
-See definition of protocol buffers and gRPC generated code in [spec/exmaples/hello](https://github.com/ganmacs/grpc_mock/tree/master/spec/examples/hello)
+See definition of protocol buffers and gRPC generated code in [spec/exmaples/hello](https://github.com/Freshly/proto_pharm/tree/master/spec/examples/hello)
 
 ### Stubbed request based on path and with the default response
 
 ```ruby
-GrpcMock.stub_request("/hello.hello/Hello").to_return(Hello::HelloResponse.new(msg: 'test'))
+ProtoPharm.stub_request("/hello.hello/Hello").to_return(Hello::HelloResponse.new(msg: 'test'))
 
 client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
 client.hello(Hello::HelloRequest.new(msg: 'hi')) # => Hello::HelloResponse.new(msg: 'test')
@@ -42,7 +44,7 @@ client.hello(Hello::HelloRequest.new(msg: 'hi')) # => Hello::HelloResponse.new(m
 ### Stubbing requests based on path and request
 
 ```ruby
-GrpcMock.stub_request("/hello.hello/Hello").with(Hello::HelloRequest.new(msg: 'hi')).to_return(Hello::HelloResponse.new(msg: 'test'))
+ProtoPharm.stub_request("/hello.hello/Hello").with(Hello::HelloRequest.new(msg: 'hi')).to_return(Hello::HelloResponse.new(msg: 'test'))
 
 client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
 client.hello(Hello::HelloRequest.new(msg: 'hello')) # => send a request to server
@@ -52,7 +54,7 @@ client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.ne
 ### Stubbing per-action requests based on parametrized request
 
 ```ruby
-GrpcMock.stub_grpc_action(Hello::Hello::Service, :Hello).with(msg: 'hi').to_return(msg: 'test')
+ProtoPharm.stub_grpc_action(Hello::Hello::Service, :Hello).with(msg: 'hi').to_return(msg: 'test')
 
 client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
 client.hello(Hello::HelloRequest.new(msg: 'hello')) # => send a request to server
@@ -63,9 +65,9 @@ client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.ne
 ### You can user either proto objects or hash for stubbing requests
 
 ```ruby
-GrpcMock.stub_grpc_action(Hello::Hello::Service, :Hello).with(Hello::HelloRequest.new(msg: 'hi')).to_return(msg: 'test')
+ProtoPharm.stub_grpc_action(Hello::Hello::Service, :Hello).with(Hello::HelloRequest.new(msg: 'hi')).to_return(msg: 'test')
 # or
-GrpcMock.stub_grpc_action(Hello::Hello::Service, :Hello).with(msg: 'hi').to_return(Hello::HelloResponse.new(msg: 'test'))
+ProtoPharm.stub_grpc_action(Hello::Hello::Service, :Hello).with(msg: 'hi').to_return(Hello::HelloResponse.new(msg: 'test'))
 
 client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
 client.hello(Hello::HelloRequest.new(msg: 'hello')) # => send a request to server
@@ -77,10 +79,10 @@ client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.ne
 ```ruby
 client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
 
-GrpcMock.disable_net_connect!
+ProtoPharm.disable_net_connect!
 client.hello(Hello::HelloRequest.new(msg: 'hello')) # => Raise NetConnectNotAllowedError error
 
-GrpcMock.allow_net_connect!
+ProtoPharm.allow_net_connect!
 Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure) # => send a request to server
 ```
 
@@ -89,7 +91,7 @@ Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure) # => send a 
 **Exception declared by class**
 
 ```ruby
-GrpcMock.stub_request("/hello.hello/Hello").to_raise(StandardError)
+ProtoPharm.stub_request("/hello.hello/Hello").to_raise(StandardError)
 
 client = Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure)
 client.hello(Hello::HelloRequest.new(msg: 'hi')) # => Raise StandardError
@@ -98,18 +100,18 @@ client.hello(Hello::HelloRequest.new(msg: 'hi')) # => Raise StandardError
 **or by exception instance**
 
 ```ruby
-GrpcMock.stub_request("/hello.hello/Hello").to_raise(StandardError.new("Some error"))
+ProtoPharm.stub_request("/hello.hello/Hello").to_raise(StandardError.new("Some error"))
 ```
 
 **or by string**
 
 ```ruby
-GrpcMock.stub_request("/hello.hello/Hello").to_raise("Some error")
+ProtoPharm.stub_request("/hello.hello/Hello").to_raise("Some error")
 ```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ganmacs/grpc_mock. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Freshly/proto_pharm. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
