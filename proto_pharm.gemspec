@@ -2,17 +2,17 @@
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'grpc_mock/version'
+require 'proto_pharm/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'gruffish'
+  spec.name          = 'proto_pharm'
   spec.version       = GrpcMock::VERSION
   spec.authors       = ['Yuta Iwama', 'Allen Rettberg']
   spec.email         = ['ganmacs@gmail.com', 'allen.rettberg@freshly.com']
 
-  spec.summary       = 'Stubs your gRPCs with some gruffy magic'
-  spec.description   = 'Stubs your gRPCs with some gruffy magic'
-  spec.homepage      = 'https://github.com/Freshly/gruffish'
+  spec.summary       = 'Stub your gRPCs with lab-grown proto objects'
+  spec.description   = 'Stub your gRPCs with lab-grown proto objects'
+  spec.homepage      = 'https://github.com/Freshly/proto_pharm'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
