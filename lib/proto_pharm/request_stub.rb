@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'grpc_mock/request_pattern'
-require 'grpc_mock/response'
-require 'grpc_mock/response_sequence'
-require 'grpc_mock/errors'
+require 'proto_pharm/request_pattern'
+require 'proto_pharm/response'
+require 'proto_pharm/response_sequence'
+require 'proto_pharm/errors'
 
 module GrpcMock
   class RequestStub

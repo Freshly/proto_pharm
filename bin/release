@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative "../lib/grpc_mock/version"
+require_relative "../lib/proto_pharm/version"
 
 current_branch = `git rev-parse --abbrev-ref HEAD`.strip
 

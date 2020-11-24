@@ -4,11 +4,11 @@ require 'active_support/core_ext/module'
 
 module GrpcMock
   module DSL
-    delegate :stub_grpc_action, to: :grpc_mock
+    delegate :stub_grpc_action, to: :proto_pharm
 
     private
 
-    def grpc_mock
+    def proto_pharm
       ::GrpcMock
     end
   end

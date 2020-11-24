@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'grpc'
-require 'grpc_mock/errors'
-require 'grpc_mock/operation_stub'
+require 'proto_pharm/errors'
+require 'proto_pharm/operation_stub'
 
 module GrpcMock
   class GrpcStubAdapter

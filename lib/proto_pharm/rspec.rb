@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'grpc_mock'
-require 'grpc_mock/dsl'
+require 'proto_pharm'
+require 'proto_pharm/dsl'
 
 RSpec.configure do |config|
   config.before(:suite) do

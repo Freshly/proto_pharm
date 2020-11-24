@@ -1,13 +1,15 @@
-# GrpcMock [![Build Status](https://travis-ci.org/ganmacs/grpc_mock.svg?branch=master)](https://travis-ci.org/ganmacs/grpc_mock)
+# ProtoPharm
 
-Library for stubbing grpc in Ruby.
+Stub your gRPCs with lab-grown proto objects.
+
+Built on a great foundation by @ganmacs at [ganmacs/grpc_mock](https://github.com/ganmacs/grpc_mock).
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile in the development/test group:
 
 ```ruby
-gem 'grpc_mock'
+gem 'proto_pharm'
 ```
 
 And then execute:
@@ -16,19 +18,19 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install grpc_mock
+    $ gem install proto_pharm
 
 ## Usage
 
 If you use [RSpec](https://github.com/rspec/rspec), add the following code to spec/spec_helper.rb:
 
 ```ruby
-require 'grpc_mock/rspec'
+require 'proto_pharm/rspec'
 ```
 
 ## Examples
 
-See definition of protocol buffers and gRPC generated code in [spec/exmaples/hello](https://github.com/ganmacs/grpc_mock/tree/master/spec/examples/hello)
+See definition of protocol buffers and gRPC generated code in [spec/exmaples/hello](https://github.com/Freshly/proto_pharm/tree/master/spec/examples/hello)
 
 ### Stubbed request based on path and with the default response
 
@@ -109,7 +111,7 @@ GrpcMock.stub_request("/hello.hello/Hello").to_raise("Some error")
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ganmacs/grpc_mock. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Freshly/proto_pharm. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 

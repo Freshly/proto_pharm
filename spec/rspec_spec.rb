@@ -2,8 +2,8 @@
 
 require_relative 'examples/hello/hello_client'
 
-RSpec.describe 'grpc_mock/rspec' do
-  require 'grpc_mock/rspec'
+RSpec.describe 'proto_pharm/rspec' do
+  require 'proto_pharm/rspec'
 
   before do
     GrpcMock.enable!
