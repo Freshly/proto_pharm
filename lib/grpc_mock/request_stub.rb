@@ -7,6 +7,8 @@ require 'grpc_mock/errors'
 
 module GrpcMock
   class RequestStub
+    attr_reader :request_pattern, :response_sequence
+
     # @param path [String] gRPC path like /${service_name}/${method_name}
     def initialize(path)
       @request_pattern = RequestPattern.new(path)

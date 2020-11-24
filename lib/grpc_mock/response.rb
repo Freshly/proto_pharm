@@ -3,6 +3,8 @@
 module GrpcMock
   module Response
     class ExceptionValue
+      attr_reader :exception
+
       def initialize(exception)
         @exception = case exception
                      when String
