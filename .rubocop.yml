@@ -3,7 +3,8 @@ AllCops:
     - 'spec/examples/**/*'
     - '**/**/*_pb.rb' # auto-generated
   DisplayCopNames: true
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
+  NewCops: enable
 
 Style/AndOr:
   EnforcedStyle: conditionals
@@ -42,7 +43,7 @@ Style/WhileUntilModifier:
   Enabled: false
 
 Naming/PredicateName:
-  NamePrefixBlacklist:
+  ForbiddenPrefixes:
     - "is_"
     - "have_"
   NamePrefix:
@@ -67,6 +68,9 @@ Style/NumericPredicate:
 Metrics/ParameterLists:
   CountKeywordArgs: false
 
+Layout/LineLength:
+  Max: 160
+
 Lint/UnderscorePrefixedVariableName:
   Enabled: false
 
@@ -75,9 +79,6 @@ Metrics/AbcSize:
 
 Metrics/CyclomaticComplexity:
   Max: 10
-
-Metrics/LineLength:
-  Max: 160
 
 Metrics/MethodLength:
   Max: 40
