@@ -177,7 +177,7 @@ RSpec.describe ProtoPharm::ActionStub do
   end
 
   describe '#to_fail_with' do
-    let(:failure) { action_stub.to_fail_with(code, message, **metadata) }
+    let(:failure) { action_stub.to_fail_with(code, message, metadata: metadata) }
     let(:exception) { failure.response_sequence.first.responses.first.exception }
 
     let(:message) { Faker::ChuckNorris.fact }

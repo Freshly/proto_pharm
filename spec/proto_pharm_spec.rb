@@ -104,7 +104,7 @@ RSpec.describe ProtoPharm do
 
       before do
         described_class.enable!
-        ProtoPharm.stub_grpc_action(service, action).to_fail_with(:not_found, message, metadata)
+        ProtoPharm.stub_grpc_action(service, action).to_fail_with(:not_found, message, metadata: metadata)
       end
 
       it 'raises the expected error' do
