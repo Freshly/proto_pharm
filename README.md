@@ -1,6 +1,6 @@
 # ProtoPharm
 
-Stub your gRPCs with lab-grown proto objects.
+Stub your gRPCs with lab-grown proto objects. Life is better on the pharm.
 
 Built on a great foundation by @ganmacs at [ganmacs/grpc_mock](https://github.com/ganmacs/grpc_mock).
 
