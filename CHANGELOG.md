@@ -1,6 +1,7 @@
 # Changelog
 
-## 0.5.0 [Upcoming]
+## 0.5.0
+*Release Date: 11/16/20*
 
 - Rename gem to `gruffish`
 - Add support for `return_op` option([#1](https://github.com/Freshly/gruffish/pull/1), [#2](https://github.com/Freshly/gruffish/pull/2))
