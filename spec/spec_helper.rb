@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'grpc_mock'
+require 'proto_pharm'
+require 'pry'
+require 'faker'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

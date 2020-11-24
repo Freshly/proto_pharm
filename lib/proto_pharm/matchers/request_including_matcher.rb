@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'grpc_mock/matchers/hash_argument_matcher'
+require 'proto_pharm/matchers/hash_argument_matcher'
 
-module GrpcMock
+module ProtoPharm
   module Matchers
     class RequestIncludingMatcher < HashArgumentMatcher
       def ==(actual)
@@ -10,7 +10,7 @@ module GrpcMock
           actual = actual.to_h
         end
 
-        actual = Hash[GrpcMock::Matchers::HashArgumentMatcher.stringify_keys!(actual, deep: true)]
+        actual = Hash[ProtoPharm::Matchers::HashArgumentMatcher.stringify_keys!(actual, deep: true)]
         super { |key, value| inner_including(value, key, actual) }
       rescue NoMethodError
         false

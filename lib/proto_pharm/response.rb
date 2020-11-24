@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-module GrpcMock
+module ProtoPharm
   module Response
     class ExceptionValue
+      attr_reader :exception
+
       def initialize(exception)
         @exception = case exception
                      when String
                        StandardError.new(exception)
                      when Class
-                       exception.new('Exception from GrpcMock')
+                       exception.new('Exception from ProtoPharm')
                      when Exception
                        exception
                      else

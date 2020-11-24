@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe GrpcMock::OperationStub do
+RSpec.describe ProtoPharm::OperationStub do
   subject(:operation) { described_class.new(response: response, metadata: metadata, deadline: deadline) }
 
   let(:response) { double(:response) }

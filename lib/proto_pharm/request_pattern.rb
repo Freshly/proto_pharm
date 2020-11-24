@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GrpcMock
+module ProtoPharm
   class RequestPattern
     # @param path [String]
     def initialize(path)

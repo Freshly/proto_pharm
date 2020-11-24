@@ -9,6 +9,7 @@ jobs:
       matrix:
         ruby:
         - "2.6.x"
+        - "2.7.x"
 
     steps:
     - uses: actions/checkout@v1

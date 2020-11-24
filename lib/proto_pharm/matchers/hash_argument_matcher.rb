@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GrpcMock
+module ProtoPharm
   module Matchers
     # Base class for Hash matchers
     # https://github.com/rspec/rspec-mocks/blob/master/lib/rspec/mocks/argument_matchers.rb
@@ -25,7 +25,7 @@ module GrpcMock
 
       def initialize(expected)
         @expected = Hash[
-          GrpcMock::Matchers::HashArgumentMatcher.stringify_keys!(expected, deep: true).sort,
+          ProtoPharm::Matchers::HashArgumentMatcher.stringify_keys!(expected, deep: true).sort,
         ]
       end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe GrpcMock::StubRegistry do
+RSpec.describe ProtoPharm::StubRegistry do
   let(:registry) do
     described_class.new
   end

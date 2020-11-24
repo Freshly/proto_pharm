@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-module GrpcMock
+module ProtoPharm
   class ResponsesSequence
     attr_accessor :repeat
+    attr_reader :responses
 
     def initialize(responses)
       @repeat = 1

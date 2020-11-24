@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GrpcMock
+module ProtoPharm
   class StubRegistry
     def initialize
       @request_stubs = []
@@ -10,7 +10,7 @@ module GrpcMock
       @request_stubs = []
     end
 
-    # @param stub [GrpcMock::RequestStub]
+    # @param stub [ProtoPharm::RequestStub]
     def register_request_stub(stub)
       @request_stubs.unshift(stub)
       stub

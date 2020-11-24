@@ -1,17 +1,20 @@
 # frozen_string_literal: true
 
-require 'grpc_mock'
+require 'proto_pharm'
+require 'proto_pharm/dsl'
 
 RSpec.configure do |config|
   config.before(:suite) do
-    GrpcMock.enable!
+    ProtoPharm.enable!
   end
 
   config.after(:suite) do
-    GrpcMock.disable!
+    ProtoPharm.disable!
   end
 
   config.after(:each) do
-    GrpcMock.reset!
+    ProtoPharm.reset!
   end
+
+  config.include ProtoPharm::DSL
 end

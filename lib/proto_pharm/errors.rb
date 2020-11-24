@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GrpcMock
+module ProtoPharm
   class NetConnectNotAllowedError < StandardError
     def initialize(sigunature)
       super("Real gRPC connections are disabled. #{sigunature} is requested")
