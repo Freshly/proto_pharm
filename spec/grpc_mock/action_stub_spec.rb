@@ -176,6 +176,56 @@ RSpec.describe GrpcMock::ActionStub do
     end
   end
 
+  describe '#to_fail_with' do
+    let(:failure) { action_stub.to_fail_with(code, message, **metadata) }
+    let(:exception) { failure.response_sequence.first.responses.first.exception }
+
+    let(:message) { Faker::ChuckNorris.fact }
+    let(:metadata) { Hash[*Faker::Lorem.unique.words(number: 4).map(&:to_sym)] }
+
+    before do
+      allow(action_stub).to receive(:to_raise).and_call_original
+    end
+
+    context 'with a valid failure code' do
+      let(:expected_error) { GRPC.const_get(code.camelize).new(message, metadata) }
+      let(:code) { %w[invalid_argument not_found unauthenticated].sample }
+
+      it 'returns itself' do
+        expect(failure).to equal action_stub
+      end
+
+      it 'stubs the response with the expected error' do
+        expect(exception).to eq expected_error
+        expect(exception.metadata).to eq metadata
+      end
+
+      it 'sends the error to to_raise' do
+        expect(action_stub).to have_received(:to_raise).with(exception)
+      end
+    end
+
+    context 'with an invalid failure code' do
+      let(:code) { Faker::Lorem.word }
+
+      it 'raises an ArgumentError' do
+        expect { failure }.to raise_error(ArgumentError, "'#{code}' is not a valid gRPC failure code")
+      end
+
+      context 'with a non-failure (but existing) constant name' do
+        let(:code) do
+          GRPC.constants.reject do |name|
+            GRPC.const_get(name).then { |c| !c.is_a?(Class) || c < GRPC::BadStatus }
+          end.sample
+        end
+
+        it 'raises an ArgumentError' do
+          expect { failure }.to raise_error(ArgumentError, "'#{code}' is not a valid gRPC failure code")
+        end
+      end
+    end
+  end
+
   describe '#match?' do
     let(:path) { "/#{service_name}/#{endpoint.to_s.camelize}" }
 

@@ -3,6 +3,7 @@
 module GrpcMock
   class ResponsesSequence
     attr_accessor :repeat
+    attr_reader :responses
 
     def initialize(responses)
       @repeat = 1

@@ -98,6 +98,24 @@ RSpec.describe GrpcMock do
       it { expect { client.send_message('hello!') }.to raise_error(exception.class) }
     end
 
+    context 'with to_fail_with' do
+      let(:message) { Faker::ChuckNorris.fact }
+      let(:metadata) { Hash[*Faker::Hipster.unique.words(number: 4).map(&:to_sym)] }
+
+      before do
+        described_class.enable!
+        GrpcMock.stub_grpc_action(service, action).to_fail_with(:not_found, message, metadata)
+      end
+
+      it 'raises the expected error' do
+        expect { client.send_message('hello!') }.to raise_error do |exception|
+          expect(exception).to be_a GRPC::NotFound
+          expect(exception.message).to eq "5:#{message}"
+          expect(exception.metadata).to eq metadata
+        end
+      end
+    end
+
     describe '.with' do
       include_context "with disabled network connections"
 
