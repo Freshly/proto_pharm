@@ -5,7 +5,7 @@ require 'active_support/core_ext/object/blank'
 
 require_relative 'stub_components/failure_response'
 
-module GrpcMock
+module ProtoPharm
   class ActionStub < RequestStub
     include StubComponents::FailureResponse
 

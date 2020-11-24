@@ -5,7 +5,7 @@ require 'proto_pharm/response'
 require 'proto_pharm/response_sequence'
 require 'proto_pharm/errors'
 
-module GrpcMock
+module ProtoPharm
   class RequestStub
     attr_reader :request_pattern, :response_sequence
 

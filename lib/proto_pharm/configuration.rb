@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GrpcMock
+module ProtoPharm
   class Configuration
     attr_accessor :allow_net_connect
 

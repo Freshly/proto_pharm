@@ -2,7 +2,7 @@
 
 require 'proto_pharm/matchers/hash_argument_matcher'
 
-module GrpcMock
+module ProtoPharm
   module Matchers
     class RequestIncludingMatcher < HashArgumentMatcher
       def ==(actual)

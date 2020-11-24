@@ -2,7 +2,7 @@
 
 require 'active_support/core_ext/module'
 
-module GrpcMock
+module ProtoPharm
   module DSL
     delegate :stub_grpc_action, to: :proto_pharm
 

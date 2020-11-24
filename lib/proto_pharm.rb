@@ -6,7 +6,7 @@ require 'proto_pharm/configuration'
 require 'proto_pharm/adapter'
 require 'proto_pharm/stub_registry'
 
-module GrpcMock
+module ProtoPharm
   extend GrpcMock::Api
 
   class << self

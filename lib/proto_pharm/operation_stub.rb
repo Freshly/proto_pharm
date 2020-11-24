@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GrpcMock
+module ProtoPharm
   class OperationStub
     attr_reader :response, :metadata, :trailing_metadata, :deadline
     alias_method :execute, :response

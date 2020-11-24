@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GrpcMock
+module ProtoPharm
   module Response
     class ExceptionValue
       attr_reader :exception

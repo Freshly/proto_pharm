@@ -2,7 +2,7 @@
 
 require 'proto_pharm/grpc_stub_adapter'
 
-module GrpcMock
+module ProtoPharm
   class Adapter
     def enable!
       adapter.enable!

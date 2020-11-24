@@ -4,7 +4,7 @@ require 'grpc'
 require 'proto_pharm/errors'
 require 'proto_pharm/operation_stub'
 
-module GrpcMock
+module ProtoPharm
   class GrpcStubAdapter
     module MockStub
       def request_response(method, request, *args, **opts)

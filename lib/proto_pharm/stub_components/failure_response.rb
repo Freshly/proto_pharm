@@ -2,7 +2,7 @@
 
 require 'active_support/core_ext/object/blank'
 
-module GrpcMock
+module ProtoPharm
   module StubComponents
     module FailureResponse
       # @param code [String, Symbol] A gRPC failure code, such as not_found or invalid_argument. Default: :invalid_argument
