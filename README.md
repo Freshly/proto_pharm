@@ -30,7 +30,7 @@ require 'proto_pharm/rspec'
 
 ## Examples
 
-See definition of protocol buffers and gRPC generated code in [spec/exmaples/hello](https://github.com/Freshly/proto_pharm/tree/master/spec/examples/hello)
+See definition of protocol buffers and gRPC generated code in [spec/exmples/hello](https://github.com/Freshly/proto_pharm/tree/master/spec/examples/hello)
 
 ### Stubbed request based on path and with the default response
 
@@ -84,6 +84,22 @@ client.hello(Hello::HelloRequest.new(msg: 'hello')) # => Raise NetConnectNotAllo
 
 ProtoPharm.allow_net_connect!
 Hello::Hello::Stub.new('localhost:8000', :this_channel_is_insecure) # => send a request to server
+```
+
+### Stubbing Failures
+
+Specific gRPC failure codes can be stubbed with metadata
+```ruby
+ProtoPharm.
+  stub_grpc_action(Hello::Hello::Service, :Hello).
+    with(Hello::HelloRequest.new(msg: 'hi')).
+    to_fail_with(:invalid_argument, "This message is optional", put: :your, metadata: :here)
+    
+begin 
+  client.hello(Hello::HelloRequest.new(msg: 'hi'))    
+rescue => e
+  e # => #<GRPC::InvalidArgument: 3:This message is optional>
+  e.metadata # => { :put => :your, :metadata => here }
 ```
 
 ### Raising errors

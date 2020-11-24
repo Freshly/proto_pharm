@@ -87,7 +87,7 @@ RSpec.describe ProtoPharm do
       end
     end
 
-    context 'with to_raise' do
+    context 'with #to_raise' do
       let(:exception) { StandardError.new('message') }
 
       before do
@@ -98,7 +98,7 @@ RSpec.describe ProtoPharm do
       it { expect { client.send_message('hello!') }.to raise_error(exception.class) }
     end
 
-    context 'with to_fail_with' do
+    context 'with #to_fail_with' do
       let(:message) { Faker::ChuckNorris.fact }
       let(:metadata) { Hash[*Faker::Hipster.unique.words(number: 4).map(&:to_sym)] }
 
