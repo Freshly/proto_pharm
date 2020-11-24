@@ -90,3 +90,5 @@ Metrics/ClassLength:
 
 Metrics/BlockLength:
   Max: 40
+  Exclude:
+    - spec/**/*_spec.rb

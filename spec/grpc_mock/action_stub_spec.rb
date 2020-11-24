@@ -5,14 +5,8 @@ require 'examples/hello/hello_services_pb'
 RSpec.describe GrpcMock::ActionStub do
   subject(:action_stub) { described_class.new(service, endpoint) }
 
-  let(:path) { "/#{service_name}/#{endpoint.to_s.camelize}" }
-
-  let(:action) do
-    double(input: input_class, output: output_class)
-  end
-
   let(:service) { Hello::Hello::Service }
-  let(:service_name) { service.service_name  }
+  let(:service_name) { service.service_name }
   let(:endpoint) { :hello }
 
   let(:input_class) { Hello::HelloRequest }
@@ -20,8 +14,8 @@ RSpec.describe GrpcMock::ActionStub do
 
   describe '#response' do
     let(:exception) { StandardError.new }
-    let(:value1) { { msg: "response 1" } }
-    let(:value2) { { msg: "response 2" } }
+    let(:value1) { { msg: 'response 1' } }
+    let(:value2) { { msg: 'response 2' } }
 
     it 'returns response' do
       action_stub.to_return(value1)
@@ -63,7 +57,6 @@ RSpec.describe GrpcMock::ActionStub do
       let(:request) { { msg: 'request' } }
 
       it 'registers request', aggregate: true do
-
         expect(action_stub.with(request)).to eq(action_stub)
         expect(input_class).to have_received(:new).with(request)
       end
@@ -184,6 +177,8 @@ RSpec.describe GrpcMock::ActionStub do
   end
 
   describe '#match?' do
+    let(:path) { "/#{service_name}/#{endpoint.to_s.camelize}" }
+
     subject { action_stub.match?(path, double) }
 
     it { is_expected.to be true }
