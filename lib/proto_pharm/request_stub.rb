@@ -34,7 +34,7 @@ module ProtoPharm
 
     def response
       if @response_sequence.empty?
-        raise ProtoPharm::NoResponseError, 'Must be set some values by using #GrpMock::RequestStub#to_run'
+        raise ProtoPharm::NoResponseError, 'Must be set some values by using #ProtoPharm::RequestStub#to_run'
       elsif @response_sequence.size == 1
         @response_sequence.first.next
       else
