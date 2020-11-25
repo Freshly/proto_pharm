@@ -11,8 +11,8 @@ module ProtoPharm
       ProtoPharm.stub_registry.register_request_stub(ProtoPharm::RequestStub.new(path))
     end
 
-    def stub_grpc_action(path, rpc_action)
-      ProtoPharm.stub_registry.register_request_stub(ProtoPharm::ActionStub.new(path, rpc_action))
+    def stub_grpc_action(service, rpc_action)
+      ProtoPharm.stub_registry.register_request_stub(ProtoPharm::ActionStub.new(service, rpc_action))
     end
 
     # @param values [Hash]
