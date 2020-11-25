@@ -21,9 +21,9 @@ module ProtoPharm
 
     # @param path [String]
     # @param request [Object]
-    # @return [*] Response stubbed for the given request, if a matching stub can be found
-    def response_for_request(path, request)
-      request_stubs[path].find { |stub| stub.match?(path, request) }&.response
+    # @return [ProtoPharm::RequestStub] RequestStub matching the given path/request, if found
+    def find_matching_request(path, request)
+      request_stubs[path]&.find { |stub| stub.match?(path, request) }
     end
   end
 end
