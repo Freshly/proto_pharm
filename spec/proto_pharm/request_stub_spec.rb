@@ -9,6 +9,54 @@ RSpec.describe ProtoPharm::RequestStub do
     "/service_name/method_name"
   end
 
+  describe "#received_count" do
+    subject { stub_request.received_count }
+
+    context "when request has not been received yet" do
+      it { is_expected.to eq 0 }
+    end
+
+    context "when received! has been called once" do
+      before { stub_request.received! }
+
+      it { is_expected.to eq 1 }
+    end
+
+    context "when received! has been called more than once" do
+      let(:received_count) { rand(2..10) }
+
+      before { received_count.times { stub_request.received! }}
+
+      it { is_expected.to eq received_count}
+    end
+  end
+
+  describe "#received!" do
+    subject(:received!) { stub_request.received! }
+
+    context "when received! has not been called yet" do
+      it { is_expected.to eq 1 }
+
+      it "increments received_count" do
+        received!
+        expect(stub_request.received_count).to eq 1
+      end
+    end
+
+    context "when received! has been called already" do
+      let(:received_before_count) { rand(2..10) }
+
+      before { received_before_count.times { stub_request.received! } }
+
+      it { is_expected.to eq(received_before_count + 1)}
+
+      it "increments received_count" do
+        received!
+        expect(stub_request.received_count).to eq(received_before_count + 1)
+      end
+    end
+  end
+
   describe "#response" do
     let(:exception) { StandardError.new }
     let(:value1) { :response_1 }
