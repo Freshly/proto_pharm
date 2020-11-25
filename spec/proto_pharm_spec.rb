@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'examples/hello/hello_client'
-require_relative 'examples/request/request_services_pb'
+require_relative "examples/hello/hello_client"
+require_relative "examples/request/request_services_pb"
 
 RSpec.describe ProtoPharm do
-  let(:client) do
-    HelloClient.new
-  end
+  let(:client) { HelloClient.new }
 
   around do |blk|
     described_class.enable!
@@ -23,40 +21,40 @@ RSpec.describe ProtoPharm do
     end
   end
 
-  describe '.enable!' do
+  describe ".enable!" do
     include_context "with disabled network connections"
 
-    it { expect { client.send_message('hello!') } .to raise_error(ProtoPharm::NetConnectNotAllowedError) }
+    it { expect { client.send_message("hello!") } .to raise_error(ProtoPharm::NetConnectNotAllowedError) }
 
-    context 'to ProtoPharm.diable!' do
+    context "to ProtoPharm.diable!" do
       before do
         described_class.disable!
       end
 
-      it { expect { client.send_message('hello!') } .to raise_error(GRPC::Unavailable) }
+      it { expect { client.send_message("hello!") } .to raise_error(GRPC::Unavailable) }
 
-      context 'to ProtoPharm.enable!' do
+      context "to ProtoPharm.enable!" do
         before do
           described_class.enable!
         end
 
-        it { expect { client.send_message('hello!') } .to raise_error(ProtoPharm::NetConnectNotAllowedError) }
+        it { expect { client.send_message("hello!") } .to raise_error(ProtoPharm::NetConnectNotAllowedError) }
       end
     end
   end
 
-  describe '.stub_grpc_action' do
+  describe ".stub_grpc_action" do
     let(:service) { Hello::Hello }
     let(:action) { :Hello }
 
-    context 'with #to_return' do
+    context "with #to_return" do
       shared_examples_for "returns response" do
-        it { expect(client.send_message('hello!')).to eq(response) }
+        it { expect(client.send_message("hello!")).to eq(response) }
 
-        context 'when return_op is true' do
-          let(:client_call) { client.send_message('hello!', return_op: true) }
+        context "when return_op is true" do
+          let(:client_call) { client.send_message("hello!", return_op: true) }
 
-          it 'returns an executable operation' do
+          it "returns an executable operation" do
             expect(client_call).to be_a ProtoPharm::OperationStub
             expect(client_call.execute).to eq response
           end
@@ -64,7 +62,7 @@ RSpec.describe ProtoPharm do
       end
 
       context "when passed param is hash" do
-        let(:params) { { msg: 'test' } }
+        let(:params) { { msg: "test" } }
         let(:response) { Hello::HelloResponse.new(params) }
 
         before do
@@ -76,7 +74,7 @@ RSpec.describe ProtoPharm do
       end
 
       context "when passed param is proto object" do
-        let(:response) { Hello::HelloResponse.new(msg: 'test') }
+        let(:response) { Hello::HelloResponse.new(msg: "test") }
 
         before do
           described_class.enable!
@@ -87,18 +85,18 @@ RSpec.describe ProtoPharm do
       end
     end
 
-    context 'with #to_raise' do
-      let(:exception) { StandardError.new('message') }
+    context "with #to_raise" do
+      let(:exception) { StandardError.new("message") }
 
       before do
         described_class.enable!
         ProtoPharm.stub_grpc_action(service, action).to_raise(exception)
       end
 
-      it { expect { client.send_message('hello!') }.to raise_error(exception.class) }
+      it { expect { client.send_message("hello!") }.to raise_error(exception.class) }
     end
 
-    context 'with #to_fail_with' do
+    context "with #to_fail_with" do
       let(:message) { nil }
       let(:metadata) { Hash[*Faker::Hipster.unique.words(number: 4).map(&:to_sym)] }
 
@@ -107,8 +105,8 @@ RSpec.describe ProtoPharm do
         ProtoPharm.stub_grpc_action(service, action).to_fail_with(:not_found, message, metadata: metadata)
       end
 
-      it 'raises the expected error' do
-        expect { client.send_message('hello!') }.to raise_error do |exception|
+      it "raises the expected error" do
+        expect { client.send_message("hello!") }.to raise_error do |exception|
           expect(exception).to be_a GRPC::NotFound
           expect(exception.message).to eq "5:#{message}"
           expect(exception.metadata).to eq metadata
@@ -116,207 +114,207 @@ RSpec.describe ProtoPharm do
       end
     end
 
-    describe '.with' do
+    describe ".with" do
       include_context "with disabled network connections"
 
       context "when passed param is hash" do
-        let(:request_params) { { msg: 'hello!' } }
-        let(:response_params) { { msg: 'test' } }
+        let(:request_params) { { msg: "hello!" } }
+        let(:response_params) { { msg: "test" } }
         let(:response) { Hello::HelloResponse.new(response_params) }
 
-        context 'with equal request' do
+        context "with equal request" do
           before do
             ProtoPharm.stub_grpc_action(service, action).with(**request_params).to_return(**response_params)
           end
 
-          it { expect(client.send_message('hello!')).to eq(response) }
+          it { expect(client.send_message("hello!")).to eq(response) }
 
-          context 'and they are two mocking request' do
-            let(:response_params2) { { msg: 'test2' } }
+          context "and they are two mocking request" do
+            let(:response_params2) { { msg: "test2" } }
             let(:response2) { Hello::HelloResponse.new(response_params2) }
 
             before do
               ProtoPharm.stub_grpc_action(service, action).with(**request_params).to_return(**response_params2)
             end
 
-            it 'returns newest result' do
-              expect(client.send_message('hello!')).to eq(response2)
+            it "returns newest result" do
+              expect(client.send_message("hello!")).to eq(response2)
             end
           end
         end
 
-        context 'with not equal request' do
-          let(:request_params) { { msg: 'hello!' } }
+        context "with not equal request" do
+          let(:request_params) { { msg: "hello!" } }
 
           before do
             ProtoPharm.stub_grpc_action(service, action).with(**request_params).to_return(**response_params)
           end
 
-          it { expect { client.send_message('hello2!') }.to raise_error(ProtoPharm::NetConnectNotAllowedError) }
+          it { expect { client.send_message("hello2!") }.to raise_error(ProtoPharm::NetConnectNotAllowedError) }
         end
       end
 
       context "when passed param is proto object" do
-        let(:request) { Hello::HelloRequest.new(msg: 'hello!') }
-        let(:response) { Hello::HelloResponse.new(msg: 'test') }
+        let(:request) { Hello::HelloRequest.new(msg: "hello!") }
+        let(:response) { Hello::HelloResponse.new(msg: "test") }
 
-        context 'with equal request' do
+        context "with equal request" do
           before do
             ProtoPharm.stub_grpc_action(service, action).with(request).to_return(response)
           end
 
-          it { expect(client.send_message('hello!')).to eq(response) }
+          it { expect(client.send_message("hello!")).to eq(response) }
 
-          context 'and they are two mocking request' do
-            let(:response2) { Hello::HelloResponse.new(msg: 'test2') }
+          context "and they are two mocking request" do
+            let(:response2) { Hello::HelloResponse.new(msg: "test2") }
 
             before do
               ProtoPharm.stub_grpc_action(service, action).with(request).to_return(response2)
             end
 
-            it 'returns newest result' do
-              expect(client.send_message('hello!')).to eq(response2)
+            it "returns newest result" do
+              expect(client.send_message("hello!")).to eq(response2)
             end
           end
         end
 
-        context 'with not equal request' do
-          let(:request) { Hello::HelloRequest.new(msg: 'hello!') }
+        context "with not equal request" do
+          let(:request) { Hello::HelloRequest.new(msg: "hello!") }
 
           before do
             ProtoPharm.stub_grpc_action(service, action).with(request).to_return(response)
           end
 
-          it { expect { client.send_message('hello2!') }.to raise_error(ProtoPharm::NetConnectNotAllowedError) }
+          it { expect { client.send_message("hello2!") }.to raise_error(ProtoPharm::NetConnectNotAllowedError) }
         end
       end
     end
   end
 
-  describe '.stub_request' do
+  describe ".stub_request" do
     include_context "with disabled network connections"
 
-    context 'with to_return' do
-      let(:response) { Hello::HelloResponse.new(msg: 'test') }
+    context "with to_return" do
+      let(:response) { Hello::HelloResponse.new(msg: "test") }
 
       before do
         described_class.enable!
-        ProtoPharm.stub_request('/hello.hello/Hello').to_return(response)
+        ProtoPharm.stub_request("/hello.hello/Hello").to_return(response)
       end
 
-      it { expect(client.send_message('hello!')).to eq(response) }
+      it { expect(client.send_message("hello!")).to eq(response) }
 
-      context 'when return_op is true' do
-        let(:client_call) { client.send_message('hello!', return_op: true) }
+      context "when return_op is true" do
+        let(:client_call) { client.send_message("hello!", return_op: true) }
 
-        it 'returns an executable operation' do
+        it "returns an executable operation" do
           expect(client_call).to be_a ProtoPharm::OperationStub
           expect(client_call.execute).to eq response
         end
       end
     end
 
-    context 'with to_raise' do
-      let(:exception) { StandardError.new('message') }
+    context "with to_raise" do
+      let(:exception) { StandardError.new("message") }
 
       before do
         described_class.enable!
-        ProtoPharm.stub_request('/hello.hello/Hello').to_raise(exception)
+        ProtoPharm.stub_request("/hello.hello/Hello").to_raise(exception)
       end
 
-      it { expect { client.send_message('hello!') }.to raise_error(exception.class) }
+      it { expect { client.send_message("hello!") }.to raise_error(exception.class) }
     end
 
-    describe '.with' do
+    describe ".with" do
       let(:response) do
-        Hello::HelloResponse.new(msg: 'test')
+        Hello::HelloResponse.new(msg: "test")
       end
 
-      context 'with equal request' do
+      context "with equal request" do
         before do
-          ProtoPharm.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello2!')).to_return(response)
+          ProtoPharm.stub_request("/hello.hello/Hello").with(Hello::HelloRequest.new(msg: "hello2!")).to_return(response)
         end
 
-        it { expect(client.send_message('hello2!')).to eq(response) }
+        it { expect(client.send_message("hello2!")).to eq(response) }
 
-        context 'and they are two mocking request' do
+        context "and they are two mocking request" do
           let(:response2) do
-            Hello::HelloResponse.new(msg: 'test')
+            Hello::HelloResponse.new(msg: "test")
           end
 
           before do
-            ProtoPharm.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello2!')).to_return(response2)
+            ProtoPharm.stub_request("/hello.hello/Hello").with(Hello::HelloRequest.new(msg: "hello2!")).to_return(response2)
           end
 
-          it 'returns newest result' do
-            expect(client.send_message('hello2!')).to eq(response2)
+          it "returns newest result" do
+            expect(client.send_message("hello2!")).to eq(response2)
           end
         end
       end
 
-      context 'with not equal request' do
+      context "with not equal request" do
         before do
-          ProtoPharm.stub_request('/hello.hello/Hello').with(Hello::HelloRequest.new(msg: 'hello!')).to_return(response)
+          ProtoPharm.stub_request("/hello.hello/Hello").with(Hello::HelloRequest.new(msg: "hello!")).to_return(response)
         end
 
-        it { expect { client.send_message('hello2!') }.to raise_error(ProtoPharm::NetConnectNotAllowedError) }
+        it { expect { client.send_message("hello2!") }.to raise_error(ProtoPharm::NetConnectNotAllowedError) }
       end
     end
   end
 
-  describe '#request_including' do
+  describe "#request_including" do
     let(:response) do
-      Hello::HelloResponse.new(msg: 'test')
+      Hello::HelloResponse.new(msg: "test")
     end
 
-    context 'with equal request' do
+    context "with equal request" do
       before do
-        ProtoPharm.stub_request('/hello.hello/Hello').with(ProtoPharm.request_including(msg: 'hello2!')).to_return(response)
+        ProtoPharm.stub_request("/hello.hello/Hello").with(ProtoPharm.request_including(msg: "hello2!")).to_return(response)
       end
 
-      it { expect(client.send_message('hello2!')).to eq(response) }
+      it { expect(client.send_message("hello2!")).to eq(response) }
     end
 
-    context 'more complex example' do
+    context "more complex example" do
       let(:client) do
-        Request::Request::Stub.new('localhost:8000', :this_channel_is_insecure)
+        Request::Request::Stub.new("localhost:8000", :this_channel_is_insecure)
       end
 
       let(:response) do
-        Request::HelloResponse.new(msg: 'test')
+        Request::HelloResponse.new(msg: "test")
       end
 
       let(:request) do
         Request::HelloRequest.new(
-          msg: 'hello2!',
+          msg: "hello2!",
           n: 10,
           ptype: Request::PhoneType::MOBILE,
           inner: Request::InnerRequest.new(
-            msg: 'hello!',
+            msg: "hello!",
             n: 11,
             ptype: Request::PhoneType::WORK,
           ),
         )
       end
 
-      it 'returns mock object' do
-        ProtoPharm.stub_request('/request.request/Hello').with(ProtoPharm.request_including(msg: 'hello2!')).to_return(response)
+      it "returns mock object" do
+        ProtoPharm.stub_request("/request.request/Hello").with(ProtoPharm.request_including(msg: "hello2!")).to_return(response)
         expect(client.hello(request)).to eq(response)
       end
 
-      it 'returns mock object' do
-        h = { msg: 'hello2!', ptype: Request::PhoneType.lookup(Request::PhoneType::MOBILE), inner: { msg: 'hello!' } }
-        ProtoPharm.stub_request('/request.request/Hello').with(ProtoPharm.request_including(h)).to_return(response)
+      it "returns mock object" do
+        h = { msg: "hello2!", ptype: Request::PhoneType.lookup(Request::PhoneType::MOBILE), inner: { msg: "hello!" } }
+        ProtoPharm.stub_request("/request.request/Hello").with(ProtoPharm.request_including(h)).to_return(response)
         expect(client.hello(request)).to eq(response)
       end
     end
 
-    context 'with not equal request' do
+    context "with not equal request" do
       before do
-        ProtoPharm.stub_request('/hello.hello/Hello').with(ProtoPharm.request_including(msg: 'hello!')).to_return(response)
+        ProtoPharm.stub_request("/hello.hello/Hello").with(ProtoPharm.request_including(msg: "hello!")).to_return(response)
       end
 
-      it { expect { client.send_message('hello2!') }.to raise_error(GRPC::Unavailable) }
+      it { expect { client.send_message("hello2!") }.to raise_error(GRPC::Unavailable) }
     end
   end
 end
