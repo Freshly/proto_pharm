@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/module/delegation'
+
 require 'proto_pharm/request_pattern'
 require 'proto_pharm/response'
 require 'proto_pharm/response_sequence'
@@ -8,6 +10,8 @@ require 'proto_pharm/errors'
 module ProtoPharm
   class RequestStub
     attr_reader :request_pattern, :response_sequence
+
+    delegate :path, to: :request_pattern, allow_nil: true
 
     # @param path [String] gRPC path like /${service_name}/${method_name}
     def initialize(path)
