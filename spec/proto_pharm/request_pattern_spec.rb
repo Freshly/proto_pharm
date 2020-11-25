@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe ProtoPharm::RequestPattern do
-  let(:request_pattern) do
-    described_class.new(path)
-  end
+  let(:request_pattern) { described_class.new(path) }
 
-  let(:path) do
-    "test_path"
-  end
+  let(:path) { "test_path" }
 
   describe "#path" do
     subject { request_pattern.path }
@@ -56,9 +52,7 @@ RSpec.describe ProtoPharm::RequestPattern do
   end
 
   describe "match?" do
-    let(:request) do
-      double(:request)
-    end
+    let(:request) { double(:request) }
 
     it { expect(request_pattern.match?(path, request)).to eq(true) }
 
