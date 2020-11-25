@@ -11,6 +11,7 @@ module ProtoPharm
       def to_fail_with(code = :invalid_argument, message = nil, metadata: {})
         to_raise(exception_class(code).new(message, metadata))
       end
+      alias_method :to_fail, :to_fail_with
 
       private
 

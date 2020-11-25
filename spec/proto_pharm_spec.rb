@@ -99,7 +99,7 @@ RSpec.describe ProtoPharm do
     end
 
     context 'with #to_fail_with' do
-      let(:message) { Faker::ChuckNorris.fact }
+      let(:message) { nil }
       let(:metadata) { Hash[*Faker::Hipster.unique.words(number: 4).map(&:to_sym)] }
 
       before do
