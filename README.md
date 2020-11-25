@@ -93,13 +93,30 @@ Specific gRPC failure codes can be stubbed with metadata
 ProtoPharm.
   stub_grpc_action(Hello::Hello::Service, :Hello).
     with(Hello::HelloRequest.new(msg: 'hi')).
-    to_fail_with(:invalid_argument, "This message is optional", put: :your, metadata: :here)
+    to_fail_with(:invalid_argument, "This message is optional", metadata: { put: :your, metadata: :here })
     
 begin 
-  client.hello(Hello::HelloRequest.new(msg: 'hi'))    
+  client.hello(Hello::HelloRequest.new(msg: 'hi'))
 rescue => e
   e # => #<GRPC::InvalidArgument: 3:This message is optional>
   e.metadata # => { :put => :your, :metadata => here }
+```
+
+By default, The failure code is `invalid_argument` and the message is optional - so if the code under test doesn't rely on those for any downstream behavior, you can simplify the stubbing by passing only metadata:
+```ruby
+stub_grpc_action(Hello::Hello::Service, :Hello).
+  to_fail_with(metadata: { important_things: [:in, :here] })
+client.hello(Hello::HelloRequest.new(msg: 'hi')) 
+# => #<GRPC::InvalidArgument: 3:>
+exception.metadata 
+# => { :important_things => [:in, :here] }
+
+```
+...or by passing nothing at all:
+```ruby
+stub_grpc_action(Hello::Hello::Service, :Hello).to_fail
+client.hello(Hello::HelloRequest.new(msg: 'hi')) 
+# => #<GRPC::InvalidArgument: 3:>
 ```
 
 ### Raising errors

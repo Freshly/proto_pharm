@@ -176,15 +176,47 @@ RSpec.describe ProtoPharm::ActionStub do
     end
   end
 
+  describe '#to_fail' do
+    it { is_expected.to alias_method :to_fail, :to_fail_with }
+  end
+
   describe '#to_fail_with' do
-    let(:failure) { action_stub.to_fail_with(code, message, **metadata) }
+    let(:failure) { action_stub.to_fail_with(code, message, **{ metadata: metadata }.compact) }
     let(:exception) { failure.response_sequence.first.responses.first.exception }
 
     let(:message) { Faker::ChuckNorris.fact }
-    let(:metadata) { Hash[*Faker::Lorem.unique.words(number: 4).map(&:to_sym)] }
+    let(:metadata) { nil }
 
-    before do
-      allow(action_stub).to receive(:to_raise).and_call_original
+    shared_context 'with metadata' do
+      let(:metadata) { Hash[*Faker::Lorem.unique.words(number: 4).map(&:to_sym)] }
+    end
+
+    before { allow(action_stub).to receive(:to_raise).and_call_original }
+
+    context 'with no error code' do
+      subject(:failure) { action_stub.to_fail_with }
+
+      let(:expected_error) { GRPC::InvalidArgument.new(nil, metadata) }
+
+      it { is_expected.to eq action_stub }
+
+      it 'stubs invalid_argument' do
+        expect(exception).to eq expected_error
+      end
+
+      it 'sends the error to to_raise' do
+        expect(action_stub).to have_received(:to_raise).with(exception)
+      end
+
+      context 'with metadata' do
+        subject(:failure) { action_stub.to_fail_with(metadata: metadata) }
+
+        include_context 'with metadata'
+
+        it 'has the correct metadata' do
+          expect(exception.metadata).to eq metadata
+        end
+      end
     end
 
     context 'with a valid failure code' do
@@ -197,11 +229,18 @@ RSpec.describe ProtoPharm::ActionStub do
 
       it 'stubs the response with the expected error' do
         expect(exception).to eq expected_error
-        expect(exception.metadata).to eq metadata
       end
 
       it 'sends the error to to_raise' do
         expect(action_stub).to have_received(:to_raise).with(exception)
+      end
+
+      context 'with metadata' do
+        include_context 'with metadata'
+
+        it 'has the correct metadata' do
+          expect(exception.metadata).to eq metadata
+        end
       end
     end
 

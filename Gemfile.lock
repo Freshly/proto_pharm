@@ -58,6 +58,9 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.4)
+    rspice (0.25.2)
+      faker (>= 1.8, < 3.0)
+      rspec (~> 3.0)
     rubocop (0.92.0)
       parallel (~> 1.10)
       parser (>= 2.7.1.5)
@@ -87,6 +90,7 @@ DEPENDENCIES
   pry-byebug
   rake (>= 12.3.3)
   rspec (~> 3.0)
+  rspice
   rubocop
 
 BUNDLED WITH

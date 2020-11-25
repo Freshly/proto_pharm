@@ -99,12 +99,12 @@ RSpec.describe ProtoPharm do
     end
 
     context 'with #to_fail_with' do
-      let(:message) { Faker::ChuckNorris.fact }
+      let(:message) { nil }
       let(:metadata) { Hash[*Faker::Hipster.unique.words(number: 4).map(&:to_sym)] }
 
       before do
         described_class.enable!
-        ProtoPharm.stub_grpc_action(service, action).to_fail_with(:not_found, message, metadata)
+        ProtoPharm.stub_grpc_action(service, action).to_fail_with(:not_found, message, metadata: metadata)
       end
 
       it 'raises the expected error' do

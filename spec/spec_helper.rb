@@ -4,6 +4,7 @@ require 'bundler/setup'
 require 'proto_pharm'
 require 'pry'
 require 'faker'
+require 'rspice'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
