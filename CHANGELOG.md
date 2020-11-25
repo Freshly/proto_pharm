@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.5.0
+# Upcoming
+
+- Use explicit `metadata` key to stub failure metadata ([#18](https://github.com/Freshly/proto_pharm/pull/18))
+
+## 0.5.0 [Yanked]
 *Release Date: 11/24/2020*
 
 - Rename gem to `proto_pharm`
