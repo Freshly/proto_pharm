@@ -10,13 +10,15 @@ module ProtoPharm
       def request_response(method, request, *args, **opts)
         return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
-        mock = ProtoPharm.stub_registry.response_for_request(method, request)
+        request_stub = ProtoPharm.stub_registry.find_matching_request(method, request)
 
-        if mock
+        if request_stub
+          request_stub.received!
+
           if opts[:return_op]
-            OperationStub.new(response: mock.evaluate, metadata: opts[:metadata])
+            OperationStub.new(response: request_stub.response.evaluate, metadata: opts[:metadata])
           else
-            mock.evaluate
+            request_stub.response.evaluate
           end
         elsif ProtoPharm.config.allow_net_connect
           super
@@ -32,9 +34,11 @@ module ProtoPharm
         end
 
         r = requests.to_a       # FIXME: this may not work
-        mock = ProtoPharm.stub_registry.response_for_request(method, r)
-        if mock
-          mock.evaluate
+        request_stub = ProtoPharm.stub_registry.find_matching_request(method, r)
+
+        if request_stub
+          request_stub.received!
+          request_stub.response.evaluate
         elsif ProtoPharm.config.allow_net_connect
           super
         else
@@ -47,9 +51,11 @@ module ProtoPharm
           return super
         end
 
-        mock = ProtoPharm.stub_registry.response_for_request(method, request)
-        if mock
-          mock.evaluate
+        request_stub = ProtoPharm.stub_registry.find_matching_request(method, request)
+
+        if request_stub
+          request_stub.received!
+          request_stub.response.evaluate
         elsif ProtoPharm.config.allow_net_connect
           super
         else
@@ -63,9 +69,11 @@ module ProtoPharm
         end
 
         r = requests.to_a       # FIXME: this may not work
-        mock = ProtoPharm.stub_registry.response_for_request(method, r)
-        if mock
-          mock.evaluate
+        request_stub = ProtoPharm.stub_registry.find_matching_request(method, r)
+
+        if request_stub
+          request_stub.received!
+          request_stub.response.evaluate
         elsif ProtoPharm.config.allow_net_connect
           super
         else
