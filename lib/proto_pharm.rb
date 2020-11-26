@@ -2,11 +2,12 @@
 
 require "active_support/core_ext/module"
 
-require "proto_pharm/api"
-require "proto_pharm/version"
-require "proto_pharm/configuration"
-require "proto_pharm/adapter"
-require "proto_pharm/stub_registry"
+require_relative "proto_pharm/api"
+require_relative "proto_pharm/version"
+require_relative "proto_pharm/configuration"
+require_relative "proto_pharm/adapter"
+require_relative "proto_pharm/stub_registry"
+require_relative "proto_pharm/grpc_stub_adapter/mock_stub"
 
 module ProtoPharm
   extend ProtoPharm::Api
