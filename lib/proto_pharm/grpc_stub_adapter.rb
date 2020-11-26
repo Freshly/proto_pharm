@@ -29,9 +29,7 @@ module ProtoPharm
 
       # TODO
       def client_streamer(method, requests, *args)
-        unless ProtoPharm::GrpcStubAdapter.enabled?
-          return super
-        end
+        return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
         r = requests.to_a       # FIXME: this may not work
         request_stub = ProtoPharm.stub_registry.find_matching_request(method, r)
@@ -47,9 +45,7 @@ module ProtoPharm
       end
 
       def server_streamer(method, request, *args)
-        unless ProtoPharm::GrpcStubAdapter.enabled?
-          return super
-        end
+        return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
         request_stub = ProtoPharm.stub_registry.find_matching_request(method, request)
 
@@ -64,9 +60,7 @@ module ProtoPharm
       end
 
       def bidi_streamer(method, requests, *args)
-        unless ProtoPharm::GrpcStubAdapter.enabled?
-          return super
-        end
+        return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
         r = requests.to_a       # FIXME: this may not work
         request_stub = ProtoPharm.stub_registry.find_matching_request(method, r)
