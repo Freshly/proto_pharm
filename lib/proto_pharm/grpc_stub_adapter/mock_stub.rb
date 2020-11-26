@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "grpc"
-require "proto_pharm/errors"
-require "proto_pharm/operation_stub"
-
 module ProtoPharm
   class GrpcStubAdapter
     module MockStub
@@ -74,26 +70,6 @@ module ProtoPharm
           raise NetConnectNotAllowedError, method
         end
       end
-    end
-
-    def self.disable!
-      @enabled = false
-    end
-
-    def self.enable!
-      @enabled = true
-    end
-
-    def self.enabled?
-      @enabled
-    end
-
-    def enable!
-      ProtoPharm::GrpcStubAdapter.enable!
-    end
-
-    def disable!
-      ProtoPharm::GrpcStubAdapter.disable!
     end
   end
 end

@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 require "active_support/core_ext/module"
+require "grpc"
 
 require_relative "proto_pharm/api"
 require_relative "proto_pharm/version"
 require_relative "proto_pharm/configuration"
 require_relative "proto_pharm/adapter"
 require_relative "proto_pharm/stub_registry"
+require_relative "proto_pharm/grpc_stub_adapter"
 require_relative "proto_pharm/grpc_stub_adapter/mock_stub"
 
 module ProtoPharm
