@@ -11,7 +11,7 @@ module ProtoPharm
 
     def with(request = nil, &block)
       if request.nil? && !block_given?
-        raise ArgumentError, '#with method invoked with no arguments. Either options request or block must be specified.'
+        raise ArgumentError, "#with method invoked with no arguments. Either options request or block must be specified."
       end
 
       @request = request

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'proto_pharm/grpc_stub_adapter'
+require "proto_pharm/grpc_stub_adapter"
 
 module ProtoPharm
   class Adapter

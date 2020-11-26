@@ -41,6 +41,7 @@ GEM
     pry-byebug (3.7.0)
       byebug (~> 11.0)
       pry (~> 0.10)
+    rack (2.2.3)
     rainbow (3.0.0)
     rake (13.0.1)
     regexp_parser (1.8.2)
@@ -72,7 +73,21 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (1.1.1)
       parser (>= 2.7.1.5)
+    rubocop-performance (1.8.1)
+      rubocop (>= 0.87.0)
+      rubocop-ast (>= 0.4.0)
+    rubocop-rails (2.8.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 0.87.0)
+    rubocop-rspec (1.43.2)
+      rubocop (~> 0.87)
     ruby-progressbar (1.10.1)
+    spicerack-styleguide (0.25.2)
+      rubocop (~> 0.92.0)
+      rubocop-performance (~> 1.8.0)
+      rubocop-rails (~> 2.8.0)
+      rubocop-rspec (~> 1.43.0)
     thread_safe (0.3.6)
     tzinfo (1.2.8)
       thread_safe (~> 0.1)
@@ -92,6 +107,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   rspice
   rubocop
+  spicerack-styleguide
 
 BUNDLED WITH
    2.1.4
