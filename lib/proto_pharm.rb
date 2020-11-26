@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/module"
+
 require "proto_pharm/api"
 require "proto_pharm/version"
 require "proto_pharm/configuration"
