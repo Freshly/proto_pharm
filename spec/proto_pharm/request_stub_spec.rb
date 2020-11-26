@@ -119,7 +119,6 @@ RSpec.describe ProtoPharm::RequestStub do
   describe "#to_raise" do
     context "with string" do
       let(:exception) { "string" }
-
       it "registers exception" do
         expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue]).once
         expect(stub_request.to_raise(exception)).to eq(stub_request)
@@ -128,7 +127,6 @@ RSpec.describe ProtoPharm::RequestStub do
 
     context "with class" do
       let(:response) { StandardError }
-
       it "registers exception" do
         expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue]).once
         expect(stub_request.to_raise(response)).to eq(stub_request)
@@ -137,7 +135,6 @@ RSpec.describe ProtoPharm::RequestStub do
 
     context "with exception instance" do
       let(:response) { StandardError.new("message") }
-
       it "registers exception" do
         expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue]).once
         expect(stub_request.to_raise(response)).to eq(stub_request)
@@ -146,7 +143,6 @@ RSpec.describe ProtoPharm::RequestStub do
 
     context "with invalid value (integer)" do
       let(:response) { 1 }
-
       it "raises ArgumentError" do
         expect { stub_request.to_raise(response) }.to raise_error(ArgumentError)
       end
@@ -154,7 +150,6 @@ RSpec.describe ProtoPharm::RequestStub do
 
     context "with multi exceptions" do
       let(:exception) { StandardError.new("message") }
-
       it "registers exceptions" do
         expect(ProtoPharm::ResponsesSequence).to receive(:new).with([ProtoPharm::Response::ExceptionValue, ProtoPharm::Response::ExceptionValue]).once
         expect(stub_request.to_raise(exception, exception)).to eq(stub_request)

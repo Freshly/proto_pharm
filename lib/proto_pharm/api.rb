@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'proto_pharm/request_stub'
-require 'proto_pharm/action_stub'
-require 'proto_pharm/matchers/request_including_matcher'
+require "proto_pharm/request_stub"
+require "proto_pharm/action_stub"
+require "proto_pharm/matchers/request_including_matcher"
 
 module ProtoPharm
   module Api

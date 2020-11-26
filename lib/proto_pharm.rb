@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-require 'proto_pharm/api'
-require 'proto_pharm/version'
-require 'proto_pharm/configuration'
-require 'proto_pharm/adapter'
-require 'proto_pharm/stub_registry'
+require "active_support/core_ext/module"
+
+require "proto_pharm/api"
+require "proto_pharm/version"
+require "proto_pharm/configuration"
+require "proto_pharm/adapter"
+require "proto_pharm/stub_registry"
 
 module ProtoPharm
   extend ProtoPharm::Api
@@ -40,4 +42,4 @@ module ProtoPharm
   GRPC::ClientStub.prepend GrpcStubAdapter::MockStub
 end
 
-GrpcMock = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('GrpcMock', 'ProtoPharm')
+GrpcMock = ActiveSupport::Deprecation::DeprecatedConstantProxy.new("GrpcMock", "ProtoPharm")

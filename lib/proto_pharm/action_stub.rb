@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/module'
-require 'active_support/core_ext/object/blank'
+require "active_support/core_ext/object/blank"
 
-require_relative 'stub_components/failure_response'
+require_relative "stub_components/failure_response"
 
 module ProtoPharm
   class ActionStub < RequestStub

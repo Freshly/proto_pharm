@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/module/delegation'
-
-require 'proto_pharm/request_pattern'
-require 'proto_pharm/response'
-require 'proto_pharm/response_sequence'
-require 'proto_pharm/errors'
+require "proto_pharm/request_pattern"
+require "proto_pharm/response"
+require "proto_pharm/response_sequence"
+require "proto_pharm/errors"
 
 module ProtoPharm
   class RequestStub
@@ -39,7 +37,7 @@ module ProtoPharm
 
     def response
       if @response_sequence.empty?
-        raise ProtoPharm::NoResponseError, 'Must be set some values by using ProtoPharm::RequestStub#to_run'
+        raise ProtoPharm::NoResponseError, "Must be set some values by using ProtoPharm::RequestStub#to_run"
       elsif @response_sequence.size == 1
         @response_sequence.first.next
       else

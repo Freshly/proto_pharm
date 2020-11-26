@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'grpc'
-require 'proto_pharm/errors'
-require 'proto_pharm/operation_stub'
+require "grpc"
+require "proto_pharm/errors"
+require "proto_pharm/operation_stub"
 
 module ProtoPharm
   class GrpcStubAdapter
