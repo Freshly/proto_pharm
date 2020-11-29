@@ -2,6 +2,9 @@
 
 require "active_support/core_ext/module"
 
+require_relative "proto_pharm/stub_components/failure_response"
+require_relative "proto_pharm/stub_components/service_resolution"
+
 require "proto_pharm/api"
 require "proto_pharm/version"
 require "proto_pharm/configuration"

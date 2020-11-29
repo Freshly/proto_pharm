@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "examples/hello/hello_services_pb"
-
 RSpec.describe ProtoPharm::ActionStub do
   subject(:action_stub) { described_class.new(service, endpoint) }
 
