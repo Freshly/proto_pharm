@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../../examples/hello/hello_services_pb"
-
 RSpec.describe ProtoPharm::StubComponents::ServiceResolution::Resolver do
   describe ".resolve" do
     subject(:resolve) { described_class.resolve(input) }

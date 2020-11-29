@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "examples/hello/hello_client"
-require_relative "examples/request/request_services_pb"
 
 RSpec.describe ProtoPharm do
   let(:client) do
