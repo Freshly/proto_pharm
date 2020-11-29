@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "proto_pharm/matchers/request_including_matcher"
+require_relative "../../../lib/proto_pharm/matchers/request_including_matcher"
 
 RSpec.describe ProtoPharm::Matchers::RequestIncludingMatcher do
   let(:matcher) do
