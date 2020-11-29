@@ -2,11 +2,10 @@
 
 require "active_support/core_ext/object/blank"
 
-require_relative "stub_components/failure_response"
-
 module ProtoPharm
   class ActionStub < RequestStub
     include StubComponents::FailureResponse
+    include StubComponents::ServiceResolution
 
     class InvalidProtoType < StandardError; end
 
@@ -48,7 +47,7 @@ module ProtoPharm
     delegate :service_name, :rpc_descs, to: :grpc_service
 
     def grpc_service
-      service.const_defined?(:Service) ? service::Service : service
+      @grpc_service ||= resolve_service(service)
     end
 
     def endpoint_name
