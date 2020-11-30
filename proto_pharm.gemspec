@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activesupport", ">= 5.2.0"
   spec.add_dependency "grpc", ">= 1.12.0", "< 2"
-  spec.add_dependency "short_circu_it"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "faker"

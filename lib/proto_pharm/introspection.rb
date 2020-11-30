@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "short_circu_it"
 require_relative "introspection/rpc_inspector"
 require_relative "introspection/service_resolver"
 
