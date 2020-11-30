@@ -10,7 +10,7 @@ module ProtoPharm
       delegate :service_name, :rpc_descs, to: :grpc_service
 
       def initialize(service, endpoint_name)
-        @grpc_service = ServiceResolver.resolve_service(service)
+        @grpc_service = ServiceResolver.resolve(service)
 
         @endpoint_name = endpoint_name
       end
