@@ -12,7 +12,7 @@ module ProtoPharm
           request_stub.received!
 
           if opts[:return_op]
-            OperationStub.new(response: request_stub.response.evaluate, metadata: opts[:metadata])
+            OperationStub.new(metadata: opts[:metadata]) { request_stub.response.evaluate }
           else
             request_stub.response.evaluate
           end
