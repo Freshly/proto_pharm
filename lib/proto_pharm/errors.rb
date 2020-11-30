@@ -16,5 +16,6 @@ module ProtoPharm
   end
 
   class InvalidProtoType < Error; end
+  class RpcNotFoundError < Error; end
   class RpcNotStubbedError < Error; end
 end
