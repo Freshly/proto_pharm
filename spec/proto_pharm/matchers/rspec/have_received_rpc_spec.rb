@@ -24,7 +24,7 @@ RSpec.describe ProtoPharm::Matchers::RSpec do
     context "when endpoint is stubbed" do
       subject { service }
 
-      before { stub_grpc_action(Hello::Hello, :hello).to_return(response) }
+      before { stub_grpc_action(service, endpoint).to_return(response) }
 
       context "when the rpc has not been received" do
         it { is_expected.not_to have_received_rpc(endpoint) }
