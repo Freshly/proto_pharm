@@ -22,7 +22,7 @@ module ProtoPharm
     # @param path [String]
     # @param request [Object]
     # @return [ProtoPharm::RequestStub] RequestStub matching the given path/request, if found
-    def find_matching_request(path, request)
+    def find_request_matching(path, request)
       request_stubs[path]&.find { |stub| stub.match?(path, request) }
     end
   end

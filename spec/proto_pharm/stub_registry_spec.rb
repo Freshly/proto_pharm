@@ -34,8 +34,8 @@ RSpec.describe ProtoPharm::StubRegistry do
     end
   end
 
-  describe "#find_matching_request" do
-    subject { registry.find_matching_request(path, request) }
+  describe "#find_request_matching" do
+    subject { registry.find_request_matching(path, request) }
 
     context "when nothing is stubbed for the path" do
       it { is_expected.to be_nil }
