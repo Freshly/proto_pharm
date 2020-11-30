@@ -15,18 +15,18 @@ module ProtoPharm
         @endpoint_name = endpoint_name
       end
 
-      def normalized_endpoint_name
-        @normalized_endpoint_name ||= endpoint_name.to_s.camelize.to_sym
+      def normalized_rpc_name
+        @normalized_rpc_name ||= endpoint_name.to_s.camelize.to_sym
       end
 
       def rpc_desc
-        @rpc_desc ||= rpc_descs[normalized_endpoint_name] do |endpoint|
-          raise RpcNotFoundError, "Service #{service_token} does not implement '#{normalized_endpoint_name}'" if endpoint.blank?
+        @rpc_desc ||= rpc_descs[normalized_rpc_name] do |endpoint|
+          raise RpcNotFoundError, "Service #{service_token} does not implement '#{normalized_rpc_name}'" if endpoint.blank?
         end
       end
 
       def grpc_path
-        @grpc_path ||= "/#{service_name}/#{normalized_endpoint_name}"
+        @grpc_path ||= "/#{service_name}/#{normalized_rpc_name}"
       end
 
       def input_type

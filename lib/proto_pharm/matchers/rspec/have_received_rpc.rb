@@ -15,7 +15,7 @@ module ProtoPharm
           @service_token = service_token
           @endpoint_token = endpoint_token
 
-          raise RpcNotStubbedError unless matching_request_stubs.any?
+          raise RpcNotStubbedError, "RPC '#{grpc_path}' has not been stubbed. Stub it with stub_grpc_action before asserting." unless matching_request_stubs.any?
 
           expect(received_request_stubs.size).to be > 0
         end
