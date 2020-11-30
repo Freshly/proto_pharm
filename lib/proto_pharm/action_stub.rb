@@ -45,11 +45,7 @@ module ProtoPharm
     delegate :grpc_path, :input_type, :output_type, to: :endpoint
 
     def endpoint
-      inspect_rpc(grpc_service, action)
-    end
-
-    def grpc_service
-      resolve_service(service)
+      @endpoint ||= inspect_rpc(service, action)
     end
   end
 end

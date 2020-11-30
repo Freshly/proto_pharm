@@ -6,15 +6,6 @@ require_relative "introspection/service_resolver"
 
 module ProtoPharm
   module Introspection
-    extend ActiveSupport::Concern
-
-    included do
-      include ShortCircuIt
-
-      memoize :resolve_service,
-              :inspect_rpc
-    end
-
     private
 
     def resolve_service(service)
