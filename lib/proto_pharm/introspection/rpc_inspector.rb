@@ -5,12 +5,13 @@ module ProtoPharm
     class RpcInspector
       class RpcNotFoundError < StandardError; end
 
-      attr_reader :service, :endpoint_name
+      attr_reader :grpc_service, :endpoint_name
 
-      delegate :service_name, :rpc_descs, to: :service
+      delegate :service_name, :rpc_descs, to: :grpc_service
 
       def initialize(service, endpoint_name)
-        @service = service
+        @grpc_service = ServiceResolver.resolve_service(service)
+
         @endpoint_name = endpoint_name
       end
 
