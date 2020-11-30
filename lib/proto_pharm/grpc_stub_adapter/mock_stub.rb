@@ -3,19 +3,18 @@
 module ProtoPharm
   class GrpcStubAdapter
     module MockStub
-      def request_response(method, request, *args, **opts)
+      def request_response(method, request, *args, return_op: false, **opts)
         return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
         request_stub = ProtoPharm.stub_registry.find_matching_request(method, request)
 
         if request_stub
-          request_stub.received!
-
-          if opts[:return_op]
-            OperationStub.new(metadata: opts[:metadata]) { request_stub.response.evaluate }
-          else
+          operation = OperationStub.new(metadata: opts[:metadata]) do
+            request_stub.received!
             request_stub.response.evaluate
           end
+
+          return_op ? operation : operation.execute
         elsif ProtoPharm.config.allow_net_connect
           super
         else
