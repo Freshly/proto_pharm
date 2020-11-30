@@ -3,17 +3,18 @@
 module ProtoPharm
   class GrpcStubAdapter
     module MockStub
-      def request_response(method, request, *args, **opts)
+      def request_response(method, request, *args, return_op: false, **opts)
         return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
-        mock = ProtoPharm.stub_registry.response_for_request(method, request)
+        request_stub = ProtoPharm.stub_registry.find_request_matching(method, request)
 
-        if mock
-          if opts[:return_op]
-            OperationStub.new(metadata: opts[:metadata]) { mock.evaluate }
-          else
-            mock.evaluate
+        if request_stub
+          operation = OperationStub.new(metadata: opts[:metadata]) do
+            request_stub.received!
+            request_stub.response.evaluate
           end
+
+          return_op ? operation : operation.execute
         elsif ProtoPharm.config.allow_net_connect
           super
         else
@@ -23,14 +24,14 @@ module ProtoPharm
 
       # TODO
       def client_streamer(method, requests, *args)
-        unless ProtoPharm::GrpcStubAdapter.enabled?
-          return super
-        end
+        return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
         r = requests.to_a       # FIXME: this may not work
-        mock = ProtoPharm.stub_registry.response_for_request(method, r)
-        if mock
-          mock.evaluate
+        request_stub = ProtoPharm.stub_registry.find_request_matching(method, r)
+
+        if request_stub
+          request_stub.received!
+          request_stub.response.evaluate
         elsif ProtoPharm.config.allow_net_connect
           super
         else
@@ -39,13 +40,13 @@ module ProtoPharm
       end
 
       def server_streamer(method, request, *args)
-        unless ProtoPharm::GrpcStubAdapter.enabled?
-          return super
-        end
+        return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
-        mock = ProtoPharm.stub_registry.response_for_request(method, request)
-        if mock
-          mock.evaluate
+        request_stub = ProtoPharm.stub_registry.find_request_matching(method, request)
+
+        if request_stub
+          request_stub.received!
+          request_stub.response.evaluate
         elsif ProtoPharm.config.allow_net_connect
           super
         else
@@ -54,14 +55,14 @@ module ProtoPharm
       end
 
       def bidi_streamer(method, requests, *args)
-        unless ProtoPharm::GrpcStubAdapter.enabled?
-          return super
-        end
+        return super unless ProtoPharm::GrpcStubAdapter.enabled?
 
         r = requests.to_a       # FIXME: this may not work
-        mock = ProtoPharm.stub_registry.response_for_request(method, r)
-        if mock
-          mock.evaluate
+        request_stub = ProtoPharm.stub_registry.find_request_matching(method, r)
+
+        if request_stub
+          request_stub.received!
+          request_stub.response.evaluate
         elsif ProtoPharm.config.allow_net_connect
           super
         else

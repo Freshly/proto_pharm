@@ -1,12 +1,46 @@
 # frozen_string_literal: true
 
 RSpec.describe ProtoPharm::RequestPattern do
-  let(:request_pattern) do
-    described_class.new(path)
+  let(:request_pattern) { described_class.new(path) }
+
+  let(:path) { "test_path" }
+
+  describe "#path" do
+    subject { request_pattern.path }
+
+    it { is_expected.to eq path }
   end
 
-  let(:path) do
-    "test_path"
+  describe "#request" do
+    subject { request_pattern.request }
+
+    context "when request has not been set" do
+      it { is_expected.to be_nil }
+    end
+
+    context "when request has been set" do
+      let(:request) { double }
+
+      before { request_pattern.with(request) }
+
+      it { is_expected.to eq request }
+    end
+  end
+
+  describe "#block" do
+    subject { request_pattern.block }
+
+    context "when block has not been set" do
+      it { is_expected.to be_nil }
+    end
+
+    context "when block has been set" do
+      let(:block) { -> {} }
+
+      before { request_pattern.with(&block) }
+
+      it { is_expected.to eq block }
+    end
   end
 
   describe "#with" do
@@ -18,9 +52,7 @@ RSpec.describe ProtoPharm::RequestPattern do
   end
 
   describe "match?" do
-    let(:request) do
-      double(:request)
-    end
+    let(:request) { double(:request) }
 
     it { expect(request_pattern.match?(path, request)).to eq(true) }
 

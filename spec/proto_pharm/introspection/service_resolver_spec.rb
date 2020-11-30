@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ProtoPharm::StubComponents::ServiceResolution::Resolver do
+RSpec.describe ProtoPharm::Introspection::ServiceResolver do
   describe ".resolve" do
     subject(:resolve) { described_class.resolve(input) }
 

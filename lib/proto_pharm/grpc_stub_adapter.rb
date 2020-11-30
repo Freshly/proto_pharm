@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "grpc"
 require_relative "errors"
 require_relative "operation_stub"
 

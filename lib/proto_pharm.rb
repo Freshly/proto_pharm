@@ -6,8 +6,8 @@ require "grpc"
 require_relative "proto_pharm/version"
 require_relative "proto_pharm/configuration"
 
+require_relative "proto_pharm/introspection"
 require_relative "proto_pharm/stub_components/failure_response"
-require_relative "proto_pharm/stub_components/service_resolution"
 
 require_relative "proto_pharm/adapter"
 require_relative "proto_pharm/grpc_stub_adapter"

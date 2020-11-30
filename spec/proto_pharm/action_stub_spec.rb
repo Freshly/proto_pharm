@@ -80,7 +80,7 @@ RSpec.describe ProtoPharm::ActionStub do
         let(:request) { output_class.new(msg: "hello?") }
 
         it "raises InvalidProtoType" do
-          expect { expect(action_stub.with(request)) }.to raise_error described_class::InvalidProtoType
+          expect { expect(action_stub.with(request)) }.to raise_error ProtoPharm::InvalidProtoType
         end
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe ProtoPharm::ActionStub do
         let(:response) { input_class.new(msg: "hello?") }
 
         it "raises InvalidProtoType" do
-          expect { expect(action_stub.to_return(response)) }.to raise_error described_class::InvalidProtoType
+          expect { expect(action_stub.to_return(response)) }.to raise_error ProtoPharm::InvalidProtoType
         end
       end
     end

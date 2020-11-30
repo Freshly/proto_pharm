@@ -2,9 +2,7 @@
 
 
 RSpec.describe ProtoPharm do
-  let(:client) do
-    HelloClient.new
-  end
+  let(:client) { HelloClient.new }
 
   around do |blk|
     described_class.enable!

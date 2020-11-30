@@ -7,12 +7,15 @@ require "proto_pharm/errors"
 
 module ProtoPharm
   class RequestStub
-    attr_reader :request_pattern, :response_sequence
+    attr_reader :received_count, :request_pattern, :response_sequence
+
+    delegate :path, to: :request_pattern, allow_nil: true
 
     # @param path [String] gRPC path like /${service_name}/${method_name}
     def initialize(path)
       @request_pattern = RequestPattern.new(path)
       @response_sequence = []
+      @received_count = 0
     end
 
     def with(request = nil, &block)
@@ -44,6 +47,10 @@ module ProtoPharm
 
         @response_sequence.first.next
       end
+    end
+
+    def received!
+      @received_count += 1
     end
 
     # @param path [String]
