@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "examples/hello/hello_client"
-
 RSpec.describe "proto_pharm/rspec" do
   require "proto_pharm/rspec"
 

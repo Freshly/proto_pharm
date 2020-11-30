@@ -6,6 +6,10 @@ require 'pry'
 require 'faker'
 require 'rspice'
 
+require_relative "examples/hello/hello_services_pb"
+require_relative "examples/request/request_services_pb"
+require_relative "examples/hello/hello_client"
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = '.rspec_status'
