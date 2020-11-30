@@ -3,8 +3,6 @@
 module ProtoPharm
   module Introspection
     class RpcInspector
-      class RpcNotFoundError < StandardError; end
-
       attr_reader :grpc_service, :endpoint_name
 
       delegate :service_name, :rpc_descs, to: :grpc_service
@@ -20,8 +18,8 @@ module ProtoPharm
       end
 
       def rpc_desc
-        @rpc_desc ||= rpc_descs[normalized_rpc_name] do |endpoint|
-          raise RpcNotFoundError, "Service #{service_token} does not implement '#{normalized_rpc_name}'" if endpoint.blank?
+        @rpc_desc ||= rpc_descs[normalized_rpc_name].tap do |endpoint|
+          raise RpcNotFoundError, "Service #{service_name} does not implement '#{normalized_rpc_name}'" if endpoint.blank?
         end
       end
 
