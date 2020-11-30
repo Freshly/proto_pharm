@@ -12,4 +12,6 @@ module ProtoPharm
       super("There is no response: #{msg}")
     end
   end
+
+  class InvalidProtoType < StandardError; end
 end

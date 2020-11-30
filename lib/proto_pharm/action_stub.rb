@@ -7,8 +7,6 @@ module ProtoPharm
     include Introspection
     include StubComponents::FailureResponse
 
-    class InvalidProtoType < StandardError; end
-
     attr_reader :service, :action
 
     # @param service [GRPC::GenericService] gRPC service class representing the the service being stubbed
