@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-require "proto_pharm"
-require "proto_pharm/dsl"
+require "rspec"
+
+require_relative "../proto_pharm"
+require_relative "dsl"
+require_relative "matchers/rspec"
 
 RSpec.configure do |config|
   config.before(:suite) do
@@ -17,4 +20,5 @@ RSpec.configure do |config|
   end
 
   config.include ProtoPharm::DSL
+  config.include ProtoPharm::Matchers::RSpec
 end
