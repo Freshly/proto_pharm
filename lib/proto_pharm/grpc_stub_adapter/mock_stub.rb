@@ -10,7 +10,7 @@ module ProtoPharm
 
         if mock
           if opts[:return_op]
-            OperationStub.new(response: mock.evaluate, metadata: opts[:metadata])
+            OperationStub.new(metadata: opts[:metadata]) { mock.evaluate }
           else
             mock.evaluate
           end
