@@ -4,6 +4,7 @@ PATH
     proto_pharm (0.5.0)
       activesupport (>= 5.2.0)
       grpc (>= 1.12.0, < 2)
+      short_circu_it
 
 GEM
   remote: https://rubygems.org/
@@ -14,6 +15,8 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
+    around_the_world (0.25.2)
+      activesupport (>= 5.2.1)
     ast (2.4.1)
     byebug (11.1.1)
     coderay (1.1.2)
@@ -21,10 +24,10 @@ GEM
     diff-lcs (1.4.4)
     faker (2.14.0)
       i18n (>= 1.6, < 2)
-    google-protobuf (3.14.0)
+    google-protobuf (3.14.0-universal-darwin)
     googleapis-common-protos-types (1.0.5)
       google-protobuf (~> 3.11)
-    grpc (1.32.0)
+    grpc (1.32.0-universal-darwin)
       google-protobuf (~> 3.13)
       googleapis-common-protos-types (~> 1.0)
     grpc-tools (1.32.0)
@@ -83,6 +86,9 @@ GEM
     rubocop-rspec (1.43.2)
       rubocop (~> 0.87)
     ruby-progressbar (1.10.1)
+    short_circu_it (0.25.2)
+      activesupport (>= 5.2.1)
+      around_the_world (= 0.25.2)
     spicerack-styleguide (0.25.2)
       rubocop (~> 0.92.0)
       rubocop-performance (~> 1.8.0)

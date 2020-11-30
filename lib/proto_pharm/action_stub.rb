@@ -4,8 +4,8 @@ require "active_support/core_ext/object/blank"
 
 module ProtoPharm
   class ActionStub < RequestStub
+    include Introspection
     include StubComponents::FailureResponse
-    include StubComponents::ServiceResolution
 
     class InvalidProtoType < StandardError; end
 
@@ -44,30 +44,14 @@ module ProtoPharm
 
     private
 
-    delegate :service_name, :rpc_descs, to: :grpc_service
+    delegate :grpc_path, :input_type, :output_type, to: :endpoint
+
+    def endpoint
+      inspect_rpc(grpc_service, action)
+    end
 
     def grpc_service
-      @grpc_service ||= resolve_service(service)
-    end
-
-    def endpoint_name
-      @endpoint_name ||= rpc_descs.key?(action) ? action : action.to_s.camelize.to_sym
-    end
-
-    def rpc_desc
-      rpc_descs[endpoint_name]
-    end
-
-    def grpc_path
-      "/#{service_name}/#{endpoint_name}"
-    end
-
-    def input_type
-      rpc_desc.input
-    end
-
-    def output_type
-      rpc_desc.output
+      resolve_service(service)
     end
   end
 end
