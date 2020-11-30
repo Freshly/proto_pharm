@@ -1,8 +1,8 @@
-  # frozen_string_literal: true
+# frozen_string_literal: true
 
-  module ProtoPharm
-    module StubComponents
-      module ServiceResolution
+module ProtoPharm
+  module StubComponents
+    module ServiceResolution
       module Resolver
         class InvalidGRPCServiceError < StandardError; end
 
