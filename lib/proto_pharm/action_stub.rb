@@ -30,6 +30,21 @@ module ProtoPharm
       super(endpoint.normalize_response_proto(proto, **request_kwargs))
     end
 
+    def received!(request)
+      @received_requests << request
+    end
+
+    def received_count
+      received_requests.size
+    end
+
+    def match?(match_path, match_request)
+      # If paths don't match, don't try to cast the request object
+      super unless grpc_path == match_path
+
+      super(match_path, endpoint.normalize_request_proto(match_request))
+    end
+
     private
 
     delegate :grpc_path, :input_type, :output_type, to: :endpoint
