@@ -50,13 +50,19 @@ RSpec.describe ProtoPharm do
 
         context "when return_op is true" do
           let(:client_call) { client.send_message("hello!", return_op: true) }
+          let!(:execute) { client_call.execute }
 
           it "returns an executable operation" do
             expect(client_call).to be_a described_class::OperationStub
-            expect(client_call.execute).to eq response
           end
 
-          it "records "
+          it "returns the stubbed response when executed" do
+            expect(execute).to eq response
+          end
+
+          it "records the request as received" do
+            expect(service).to have_received_rpc(action).with(msg: "hello!")
+          end
         end
       end
 
@@ -92,7 +98,10 @@ RSpec.describe ProtoPharm do
         described_class.stub_grpc_action(service, action).to_raise(exception)
       end
 
-      it { expect { client.send_message("hello!") }.to raise_error(exception.class) }
+      it "raises the stubbed exception" do
+        expect { client.send_message("hello!") }.to raise_error(exception.class, exception.message)
+        expect(service).to have_received_rpc(action).with(msg: "hello!")
+      end
     end
 
     context "with #to_fail_with" do
@@ -109,6 +118,7 @@ RSpec.describe ProtoPharm do
           expect(exception).to be_a GRPC::NotFound
           expect(exception.message).to eq "5:#{message}"
           expect(exception.metadata).to eq metadata
+          expect(service).to have_received_rpc(action).with(msg: "hello!")
         end
       end
     end

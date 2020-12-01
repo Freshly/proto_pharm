@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'proto_pharm'
 require 'pry'
 require 'faker'
 require 'rspice'
+
+require "proto_pharm"
+require "proto_pharm/rspec"
 
 require_relative "examples/hello/hello_services_pb"
 require_relative "examples/request/request_services_pb"
