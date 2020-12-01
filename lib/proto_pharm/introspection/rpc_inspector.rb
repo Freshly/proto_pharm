@@ -13,6 +13,14 @@ module ProtoPharm
         @endpoint_name = endpoint_name
       end
 
+      def normalize_request_proto(proto = nil, **kwargs)
+        cast_proto(input_type, proto, **kwargs)
+      end
+
+      def normalize_response_proto(proto = nil, **kwargs)
+        cast_proto(output_type, proto, **kwargs)
+      end
+
       def normalized_rpc_name
         @normalized_rpc_name ||= endpoint_name.to_s.camelize.to_sym
       end
@@ -33,6 +41,17 @@ module ProtoPharm
 
       def output_type
         rpc_desc.output
+      end
+
+      private
+
+      def cast_proto(proto_class, proto = nil, **kwargs)
+        return proto_class.new(**kwargs) if proto.blank?
+        return proto_class.new(proto) if proto.respond_to?(:to_hash)
+
+        raise InvalidProtoType, "Invalid proto type #{proto.class} for #{grpc_path}, expected #{proto_class}" unless proto.class == proto_class
+
+        proto
       end
     end
   end

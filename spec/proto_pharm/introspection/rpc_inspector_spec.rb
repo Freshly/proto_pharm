@@ -7,6 +7,74 @@ RSpec.describe ProtoPharm::Introspection::RpcInspector do
   let(:endpoint_name) { :hello }
   let(:rpc_desc) { grpc_service::Service.rpc_descs[endpoint_name.to_s.camelize.to_sym] }
 
+  describe "#normalize_request_proto" do
+    let(:param_hash) { { msg: "hola" } }
+
+    context "with kwargs" do
+      subject { inspector.normalize_request_proto(param_hash) }
+
+      it { is_expected.to eq inspector.input_type.new(param_hash) }
+    end
+
+    context "with a hash" do
+      subject { inspector.normalize_request_proto(**param_hash) }
+
+      it { is_expected.to eq inspector.input_type.new(param_hash) }
+    end
+
+    context "with a proto" do
+      subject(:normalized_proto) { inspector.normalize_request_proto(proto) }
+
+      context "with the correct proto class" do
+        let(:proto) { inspector.input_type.new(param_hash) }
+
+        it { is_expected.to equal proto }
+      end
+
+      context "with the wrong proto class" do
+        let(:proto) { inspector.output_type.new(param_hash) }
+
+        it "raises" do
+          expect { normalized_proto }.to raise_error ProtoPharm::InvalidProtoType
+        end
+      end
+    end
+  end
+
+  describe "#normalize_response_proto" do
+    let(:param_hash) { { msg: "adiós" } }
+
+    context "with kwargs" do
+      subject { inspector.normalize_response_proto(param_hash) }
+
+      it { is_expected.to eq inspector.output_type.new(param_hash) }
+    end
+
+    context "with a hash" do
+      subject { inspector.normalize_response_proto(**param_hash) }
+
+      it { is_expected.to eq inspector.output_type.new(param_hash) }
+    end
+
+    context "with a proto" do
+      subject(:normalized_proto) { inspector.normalize_response_proto(proto) }
+
+      context "with the correct proto class" do
+        let(:proto) { inspector.output_type.new(param_hash) }
+
+        it { is_expected.to equal proto }
+      end
+
+      context "with the wrong proto class" do
+        let(:proto) { inspector.input_type.new(param_hash) }
+
+        it "raises" do
+          expect { normalized_proto }.to raise_error ProtoPharm::InvalidProtoType
+        end
+      end
+    end
+  end
+
   describe "#normalized_rpc_name" do
     subject { inspector.normalized_rpc_name }
 
