@@ -2,7 +2,7 @@
 
 require "proto_pharm/rspec"
 
-RSpec.describe ProtoPharm::Matchers::RSpec do
+RSpec.describe ProtoPharm::RSpec::Matchers do
   subject(:service) { Hello::Hello }
 
   let(:client) { HelloClient.new }
