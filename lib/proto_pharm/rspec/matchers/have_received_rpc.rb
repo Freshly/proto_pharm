@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module ProtoPharm
-  module Matchers
-    module RSpec
-      extend ::RSpec::Matchers::DSL
+  module RSpec
+    module Matchers
+        extend ::RSpec::Matchers::DSL
 
       matcher :have_received_rpc do |endpoint_reference| # rubocop:disable Metrics/BlockLength
         include Introspection

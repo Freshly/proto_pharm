@@ -4,6 +4,10 @@ module ProtoPharm
   module DSL
     delegate :stub_grpc_action, to: :proto_pharm
 
+    def allow_grpc_service(service)
+      ServiceStub.new(service)
+    end
+
     private
 
     def proto_pharm
