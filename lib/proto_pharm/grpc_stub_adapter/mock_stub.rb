@@ -10,7 +10,7 @@ module ProtoPharm
 
         if request_stub
           operation = OperationStub.new(metadata: opts[:metadata]) do
-            request_stub.received!
+            request_stub.received!(request)
             request_stub.response.evaluate
           end
 
@@ -30,7 +30,7 @@ module ProtoPharm
         request_stub = ProtoPharm.stub_registry.find_request_matching(method, r)
 
         if request_stub
-          request_stub.received!
+          request_stub.received!(requests)
           request_stub.response.evaluate
         elsif ProtoPharm.config.allow_net_connect
           super
@@ -45,7 +45,7 @@ module ProtoPharm
         request_stub = ProtoPharm.stub_registry.find_request_matching(method, request)
 
         if request_stub
-          request_stub.received!
+          request_stub.received!(request)
           request_stub.response.evaluate
         elsif ProtoPharm.config.allow_net_connect
           super
@@ -61,7 +61,7 @@ module ProtoPharm
         request_stub = ProtoPharm.stub_registry.find_request_matching(method, r)
 
         if request_stub
-          request_stub.received!
+          request_stub.received!(requests)
           request_stub.response.evaluate
         elsif ProtoPharm.config.allow_net_connect
           super
