@@ -19,25 +19,30 @@ module ProtoPharm
     end
 
     # @param proto [Object] request proto object
-    # @param request [Hash] parameters for request
-    def with(proto = nil, **request)
-      return super(input_type.new(**request)) if proto.blank?
-      return super(input_type.new(**proto)) if proto.respond_to?(:to_hash)
-
-      raise InvalidProtoType, "Invalid proto type #{proto.class} for #{grpc_path}, expected #{input_type}" unless proto.class == input_type
-
-      super(proto)
+    # @param request_kwargs [Hash] parameters for request
+    def with(proto = nil, **request_kwargs)
+      super(endpoint.normalize_request_proto(proto, **request_kwargs))
     end
 
     # @param proto [Object] response proto object
-    # @param response [Hash] parameters to respond with
-    def to_return(proto = nil, **response)
-      return super(output_type.new(**response)) if proto.blank?
-      return super(output_type.new(**proto)) if proto.respond_to?(:to_hash)
+    # @param request_kwargs [Hash] parameters to respond with
+    def to_return(proto = nil, **request_kwargs)
+      super(endpoint.normalize_response_proto(proto, **request_kwargs))
+    end
 
-      raise InvalidProtoType, "Invalid proto type #{proto.class} for #{grpc_path}, expected #{output_type}" unless proto.class == output_type
+    def received!(request)
+      @received_requests << request
+    end
 
-      super(proto)
+    def received_count
+      received_requests.size
+    end
+
+    def match?(match_path, match_request)
+      # If paths don't match, don't try to cast the request object
+      super unless grpc_path == match_path
+
+      super(match_path, endpoint.normalize_request_proto(match_request))
     end
 
     private

@@ -7,7 +7,7 @@ require "proto_pharm/errors"
 
 module ProtoPharm
   class RequestStub
-    attr_reader :received_count, :request_pattern, :response_sequence
+    attr_reader :received_requests, :request_pattern, :response_sequence
 
     delegate :path, to: :request_pattern, allow_nil: true
 
@@ -15,7 +15,7 @@ module ProtoPharm
     def initialize(path)
       @request_pattern = RequestPattern.new(path)
       @response_sequence = []
-      @received_count = 0
+      @received_requests = []
     end
 
     def with(request = nil, &block)
@@ -49,8 +49,12 @@ module ProtoPharm
       end
     end
 
-    def received!
-      @received_count += 1
+    def received!(request)
+      @received_requests << request
+    end
+
+    def received_count
+      received_requests.size
     end
 
     # @param path [String]

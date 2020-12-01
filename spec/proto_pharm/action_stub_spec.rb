@@ -264,10 +264,67 @@ RSpec.describe ProtoPharm::ActionStub do
   end
 
   describe "#match?" do
+    subject { action_stub.match?(path, match_request) }
+
     let(:path) { "/#{service_name}/#{endpoint.to_s.camelize}" }
+    let(:match_request) { input_class.new }
 
-    subject { action_stub.match?(path, double) }
 
-    it { is_expected.to be true }
+    context "when not stubbed with request" do
+      context "with the same path" do
+        it { is_expected.to be true }
+      end
+
+      context "with a different path" do
+        let(:path) { Faker::ChuckNorris.fact }
+
+        it { is_expected.to be false }
+      end
+    end
+
+    context "when stubbed with request" do
+      let(:stubbed_request) { input_class.new(msg: stub_message) }
+      let(:stub_message) { Faker::Hipster.sentence }
+      let(:match_message) { stub_message }
+
+      before { action_stub.with(stubbed_request) }
+
+      context "with a different path" do
+        let(:path) { Faker::ChuckNorris.fact }
+
+        it { is_expected.to be false }
+      end
+
+      context "with the same path" do
+        context "with proto" do
+          let(:match_request) { input_class.new(msg: match_message) }
+
+          context "with matching parameters" do
+            it { is_expected.to be true }
+          end
+
+          context "with different parameters" do
+            let(:match_message) { Faker::Lorem.sentence }
+
+            it { is_expected.to be false }
+          end
+        end
+
+        context "with hash" do
+          let(:match_request) { { msg: match_message } }
+
+          context "with matching parameters" do
+            it { is_expected.to be true }
+          end
+
+          context "with different parameters" do
+            let(:match_message) { Faker::Lorem.sentence }
+
+            it { is_expected.to be false }
+          end
+        end
+      end
+
+    end
   end
 end
