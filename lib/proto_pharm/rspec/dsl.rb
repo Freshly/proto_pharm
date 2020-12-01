@@ -3,16 +3,12 @@
 module ProtoPharm
   module RSpec
     module DSL
-      delegate :stub_grpc_action, to: :proto_pharm
-
       def allow_grpc_service(service)
-        ServiceStub.new(service)
+        ServiceStubProxy.new(service)
       end
 
-      private
-
-      def proto_pharm
-        ::ProtoPharm
+      def receive_rpc(rpc_action)
+        ReceiveExpectation.new(rpc_action)
       end
     end
   end

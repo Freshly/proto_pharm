@@ -3,8 +3,12 @@
 require "rspec"
 
 require_relative "../proto_pharm"
-require_relative "dsl"
-require_relative "matchers/rspec"
+
+require_relative "rspec/receive_expectation"
+require_relative "rspec/service_stub_proxy"
+
+require_relative "rspec/dsl"
+require_relative "rspec/matchers/have_received_rpc"
 
 RSpec.configure do |config|
   config.before(:suite) do
@@ -19,6 +23,6 @@ RSpec.configure do |config|
     ProtoPharm.reset!
   end
 
-  config.include ProtoPharm::DSL
-  config.include ProtoPharm::Matchers::RSpec
+  config.include ProtoPharm::RSpec::DSL
+  config.include ProtoPharm::RSpec::Matchers
 end
