@@ -17,42 +17,105 @@ RSpec.describe ProtoPharm::RequestStub do
     end
 
     context "when received! has been called once" do
-      before { stub_request.received! }
+      before { stub_request.received!(double) }
 
       it { is_expected.to eq 1 }
     end
 
     context "when received! has been called more than once" do
-      let(:received_count) { rand(2..10) }
+      let(:received_before) { Array.new(rand(2..10)) { double } }
 
-      before { received_count.times { stub_request.received! }}
+      before { received_before.each { |req| stub_request.received!(req) } }
 
-      it { is_expected.to eq received_count}
+      it { is_expected.to eq received_before.size }
+    end
+
+    context "when received! is called more than once with the same request" do
+      let(:received_request) { double }
+      let(:received_count) { rand(2..5) }
+
+      before { received_count.times { stub_request.received!(received_request) } }
+
+      it { is_expected.to eq received_count }
+    end
+  end
+
+  describe "#received_requests" do
+    subject { stub_request.received_requests }
+
+    context "when received! has not been called yet" do
+      it { is_expected.to eq([]) }
+    end
+
+    context "when received! has been called already" do
+      let(:received_before) { Array.new(rand(2..10)) { double } }
+
+      before { received_before.each { |req| stub_request.received!(req) } }
+
+      it { is_expected.to eq(received_before) }
+    end
+
+    context "when received! is called more than once with the same request" do
+      let(:received_request) { double }
+      let(:received_count) { rand(2..5) }
+
+      before { received_count.times { stub_request.received!(received_request) } }
+
+      it { is_expected.to eq Array.new(received_count) { received_request } }
     end
   end
 
   describe "#received!" do
-    subject(:received!) { stub_request.received! }
+    subject(:received!) { stub_request.received!(received_request) }
+
+    let(:received_request) { double }
 
     context "when received! has not been called yet" do
-      it { is_expected.to eq 1 }
+      before { received! }
+
+      it { is_expected.to eq([ received_request ]) }
 
       it "increments received_count" do
-        received!
         expect(stub_request.received_count).to eq 1
+      end
+
+      it "appends the received request to the array" do
+        expect(stub_request.received_requests.last).to eq received_request
       end
     end
 
     context "when received! has been called already" do
-      let(:received_before_count) { rand(2..10) }
+      let(:received_before) { Array.new(rand(2..10)) { double } }
 
-      before { received_before_count.times { stub_request.received! } }
+      before do
+        received_before.each { |req| stub_request.received!(req) }
+        received!
+      end
 
-      it { is_expected.to eq(received_before_count + 1)}
+      it { is_expected.to eq(received_before + [ received_request ]) }
 
       it "increments received_count" do
-        received!
-        expect(stub_request.received_count).to eq(received_before_count + 1)
+        expect(stub_request.received_count).to eq(received_before.size + 1)
+      end
+
+      it "appends the received request to the array" do
+        expect(stub_request.received_requests.last).to eq received_request
+      end
+    end
+
+    context "when called more than once with the same request" do
+      let(:received_count) { rand(2..5) }
+
+      before { received_count.times { stub_request.received!(received_request) } }
+
+      it { is_expected.to eq(Array.new(received_count) { received_request } + [ received_request ]) }
+
+      it "increments received_count" do
+        expect(stub_request.received_count).to eq(received_count)
+      end
+
+      it "appends the received request to the array" do
+        expect(stub_request.received_requests.last).to eq received_request
       end
     end
   end
