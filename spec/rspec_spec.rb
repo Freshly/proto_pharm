@@ -1,37 +1,34 @@
 # frozen_string_literal: true
 
-RSpec.describe "proto_pharm/rspec" do
+RSpec.describe ProtoPharm::RSpec do
   require "proto_pharm/rspec"
 
-  before do
-    ProtoPharm.enable!
-    ProtoPharm.allow_net_connect!
-  end
+  let(:client) { HelloClient.new }
 
-  let(:client) do
-    HelloClient.new
-  end
+  before { ProtoPharm.enable! }
 
-  context "when request_response" do
-    it { expect { client.send_message("hello!") }.to raise_error(GRPC::Unavailable) }
-  end
+  context "with network connections enabled" do
+    before { ProtoPharm.allow_net_connect! }
 
-  context "when server_stream" do
-    it { expect { client.send_message("hello!", server_stream: true) }.to raise_error(GRPC::Unavailable) }
-  end
-
-  context "when client_stream" do
-    it { expect { client.send_message("hello!", client_stream: true) }.to raise_error(GRPC::Unavailable) }
-  end
-
-  context "when bidi_stream" do
-    it { expect { client.send_message("hello!", client_stream: true, server_stream: true) }.to raise_error(GRPC::Unavailable) }
-  end
-
-  context "disable_net_connect!" do
-    before do
-      ProtoPharm.disable_net_connect!
+    context "when request_response" do
+      it { expect { client.send_message("hello!") }.to raise_error(GRPC::Unavailable) }
     end
+
+    context "when server_stream" do
+      it { expect { client.send_message("hello!", server_stream: true) }.to raise_error(GRPC::Unavailable) }
+    end
+
+    context "when client_stream" do
+      it { expect { client.send_message("hello!", client_stream: true) }.to raise_error(GRPC::Unavailable) }
+    end
+
+    context "when bidi_stream" do
+      it { expect { client.send_message("hello!", client_stream: true, server_stream: true) }.to raise_error(GRPC::Unavailable) }
+    end
+  end
+
+  context ".disable_net_connect!" do
+    before { ProtoPharm.disable_net_connect! }
 
     context "when request_response" do
       it { expect { client.send_message("hello!") }.to raise_error(ProtoPharm::NetConnectNotAllowedError) }
