@@ -42,6 +42,7 @@ module ProtoPharm
       # If paths don't match, don't try to cast the request object
       super unless grpc_path == match_path
 
+      # If paths match, cast the given request object to the expected proto
       super(match_path, endpoint.normalize_request_proto(match_request))
     end
 
