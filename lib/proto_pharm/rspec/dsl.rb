@@ -4,11 +4,11 @@ module ProtoPharm
   module RSpec
     module DSL
       def allow_grpc_service(service)
-        ServiceStubProxy.new(service)
+        ActionStubBuilder.new(service)
       end
 
       def receive_rpc(rpc_action)
-        ReceiveExpectation.new(rpc_action)
+        ActionStubProxy.new(rpc_action)
       end
     end
   end

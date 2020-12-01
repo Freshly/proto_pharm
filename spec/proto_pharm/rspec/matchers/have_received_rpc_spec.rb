@@ -24,7 +24,7 @@ RSpec.describe ProtoPharm::RSpec::Matchers do
     context "when endpoint is stubbed" do
       subject { service }
 
-      before { stub_grpc_action(service, endpoint).to_return(response) }
+      before { allow_grpc_service(service).to receive_rpc(endpoint).and_return(response) }
 
       context "when the rpc has not been received" do
         it { is_expected.not_to have_received_rpc(endpoint) }
@@ -54,7 +54,7 @@ RSpec.describe ProtoPharm::RSpec::Matchers do
       subject(:assertion) { expect(service).to have_received_rpc(endpoint).with(**input_hash_parameters) }
     end
 
-    before { stub_grpc_action(service, endpoint).to_return(response) }
+    before { allow_grpc_service(service).to receive_rpc(endpoint).and_return(response) }
 
     context "when called with proto and hash parameters" do
       subject(:assertion) { expect(service).to have_received_rpc(endpoint).with(input_proto, **input_hash_parameters) }
