@@ -2,7 +2,7 @@
 
 module ProtoPharm
   class Adapter
-    delegate :enable!, :disable!, to: :adapter
+    delegate :enable!, :disable!, :enabled?, to: :adapter
 
     private
 
