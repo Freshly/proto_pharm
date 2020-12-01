@@ -5,7 +5,7 @@ require_relative "operation_stub"
 
 module ProtoPharm
   class GrpcStubAdapter
-    delegate :enable!, :disable!, to: :class
+    delegate :enable!, :disable!, :enabled?, to: :class
 
     class << self
       def disable!
