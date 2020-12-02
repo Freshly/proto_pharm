@@ -49,8 +49,8 @@ RSpec.describe ProtoPharm do
         it { expect(client.send_message("hello!")).to eq(response) }
 
         context "when return_op is true" do
-          let(:client_call) { client.send_message("hello!", return_op: true) }
-          let!(:execute) { client_call.execute }
+          let!(:client_call) { client.send_message("hello!", return_op: true) }
+          let(:execute) { client_call.execute }
 
           it "returns an executable operation" do
             expect(client_call).to be_a described_class::OperationStub
@@ -61,6 +61,9 @@ RSpec.describe ProtoPharm do
           end
 
           it "records the request as received" do
+            expect(service).not_to have_received_rpc(action)
+            execute
+            expect(service).to have_received_rpc(action)
             expect(service).to have_received_rpc(action).with(msg: "hello!")
           end
         end
