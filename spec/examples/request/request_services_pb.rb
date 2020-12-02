@@ -2,7 +2,7 @@
 # Source: request.proto for package 'request'
 
 require "grpc"
-require "examples/request/request_pb"
+require_relative "request_pb"
 
 module Request
   module Request
