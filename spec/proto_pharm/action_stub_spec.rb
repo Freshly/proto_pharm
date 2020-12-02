@@ -175,7 +175,22 @@ RSpec.describe ProtoPharm::ActionStub do
   end
 
   describe "#to_fail" do
-    it { is_expected.to alias_method :to_fail, :to_fail_with }
+    subject(:failure) { action_stub.to_fail }
+
+    let(:expected_error) { GRPC::InvalidArgument.new }
+    let(:exception) { failure.response_sequence.first.responses.first.exception }
+
+    before { allow(action_stub).to receive(:to_raise).and_call_original }
+
+    it { is_expected.to eq action_stub }
+
+    it "stubs invalid_argument" do
+      expect(exception).to eq expected_error
+    end
+
+    it "sends the error to to_raise" do
+      expect(action_stub).to have_received(:to_raise).with(exception)
+    end
   end
 
   describe "#to_fail_with" do
@@ -194,7 +209,7 @@ RSpec.describe ProtoPharm::ActionStub do
     context "with no error code" do
       subject(:failure) { action_stub.to_fail_with }
 
-      let(:expected_error) { GRPC::InvalidArgument.new(nil, metadata) }
+      let(:expected_error) { GRPC::InvalidArgument.new("unknown cause", metadata) }
 
       it { is_expected.to eq action_stub }
 
@@ -324,7 +339,6 @@ RSpec.describe ProtoPharm::ActionStub do
           end
         end
       end
-
     end
   end
 end

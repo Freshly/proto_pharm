@@ -8,10 +8,13 @@ module ProtoPharm
       # @param code [String, Symbol] A gRPC failure code, such as not_found or invalid_argument. Default: :invalid_argument
       # @param message [String] A message to pass back with the exception
       # @param metadata [Hash] A hash of metadata to be passed back with the exception
-      def to_fail_with(code = :invalid_argument, message = nil, metadata: {})
+      def to_fail_with(code = :invalid_argument, message = "unknown cause", metadata: {})
         to_raise(exception_class(code).new(message, metadata))
       end
-      alias_method :to_fail, :to_fail_with
+
+      def to_fail
+        to_fail_with
+      end
 
       private
 
