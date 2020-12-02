@@ -97,7 +97,7 @@ client.hello(Hello::HelloRequest.new(msg: 'Hello?')) # => You get the picture
 
 #### Asserting RPC reception
 
-ProtoPharm also adds a matcher to assert rpc reception. For example:\
+ProtoPharm also adds a matcher to assert rpc reception. For example:
 ```ruby
 allow_grpc_service(Hello::Hello)
   .to receive_rpc(:hello)
