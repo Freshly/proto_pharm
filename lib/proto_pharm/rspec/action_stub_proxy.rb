@@ -38,6 +38,12 @@ module ProtoPharm
         self
       end
 
+      def and_fail
+        expectations << Expectation.new(:to_fail, [], {})
+
+        self
+      end
+
       class Expectation
         attr_reader :method, :args, :kwargs
 

@@ -102,7 +102,7 @@ RSpec.describe ProtoPharm::RSpec do
       ProtoPharm.allow_net_connect!
     end
 
-    context "with #to_return" do
+    context "with #and_return" do
       shared_examples_for "returns response" do
         it { expect(client.send_message("hello!")).to eq(response) }
 
@@ -128,11 +128,7 @@ RSpec.describe ProtoPharm::RSpec do
         let(:params) { { msg: "test" } }
         let(:response) { Hello::HelloResponse.new(params) }
 
-        before do
-          ProtoPharm.enable!
-
-          allow_grpc_service(service).to receive_rpc(action).and_return(**params)
-        end
+        before { allow_grpc_service(service).to receive_rpc(action).and_return(**params) }
 
         it_behaves_like "returns response"
       end
@@ -140,22 +136,16 @@ RSpec.describe ProtoPharm::RSpec do
       context "when passed param is proto object" do
         let(:response) { Hello::HelloResponse.new(msg: "test") }
 
-        before do
-          ProtoPharm.enable!
-          allow_grpc_service(service).to receive_rpc(action).and_return(response)
-        end
+        before { allow_grpc_service(service).to receive_rpc(action).and_return(response) }
 
         it_behaves_like "returns response"
       end
     end
 
-    context "with #to_raise" do
+    context "with #and_raise" do
       let(:exception) { StandardError.new("message") }
 
-      before do
-        ProtoPharm.enable!
-        allow_grpc_service(service).to receive_rpc(action).and_raise(exception)
-      end
+      before { allow_grpc_service(service).to receive_rpc(action).and_raise(exception) }
 
       it "raises the stubbed exception" do
         expect { client.send_message("hello!") }.to raise_error(exception.class, exception.message)
@@ -163,20 +153,29 @@ RSpec.describe ProtoPharm::RSpec do
       end
     end
 
-    context "with #to_fail_with" do
+    context "with #and_fail_with" do
       let(:message) { nil }
       let(:metadata) { Hash[*Faker::Hipster.unique.words(number: 4).map(&:to_sym)] }
 
-      before do
-        ProtoPharm.enable!
-        allow_grpc_service(service).to receive_rpc(action).and_fail_with(:not_found, message, metadata: metadata)
-      end
+      before { allow_grpc_service(service).to receive_rpc(action).and_fail_with(:not_found, message, metadata: metadata) }
 
       it "raises the expected error" do
         expect { client.send_message("hello!") }.to raise_error do |exception|
           expect(exception).to be_a GRPC::NotFound
           expect(exception.message).to eq "5:#{message}"
           expect(exception.metadata).to eq metadata
+          expect(service).to have_received_rpc(action).with(msg: "hello!")
+        end
+      end
+    end
+
+    context "with #and_fail" do
+      before { allow_grpc_service(service).to receive_rpc(action).and_fail }
+
+      it "raises the expected error" do
+        expect { client.send_message("hello!") }.to raise_error do |exception|
+          expect(exception).to be_a GRPC::InvalidArgument
+          expect(exception.message).to eq "3:"
           expect(service).to have_received_rpc(action).with(msg: "hello!")
         end
       end

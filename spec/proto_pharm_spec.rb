@@ -126,6 +126,21 @@ RSpec.describe ProtoPharm do
       end
     end
 
+    context "with #to_fail" do
+      before do
+        described_class.enable!
+        described_class.stub_grpc_action(service, action).to_fail
+      end
+
+      it "raises the expected error" do
+        expect { client.send_message("hello!") }.to raise_error do |exception|
+          expect(exception).to be_a GRPC::InvalidArgument
+          expect(exception.message).to eq "3:"
+          expect(service).to have_received_rpc(action).with(msg: "hello!")
+        end
+      end
+    end
+
     describe ".with" do
       include_context "with disabled network connections"
 
