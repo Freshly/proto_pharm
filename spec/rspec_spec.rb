@@ -175,7 +175,7 @@ RSpec.describe ProtoPharm::RSpec do
       it "raises the expected error" do
         expect { client.send_message("hello!") }.to raise_error do |exception|
           expect(exception).to be_a GRPC::InvalidArgument
-          expect(exception.message).to eq "3:"
+          expect(exception.message).to eq "3:unknown cause"
           expect(service).to have_received_rpc(action).with(msg: "hello!")
         end
       end
