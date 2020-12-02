@@ -209,7 +209,7 @@ RSpec.describe ProtoPharm::ActionStub do
     context "with no error code" do
       subject(:failure) { action_stub.to_fail_with }
 
-      let(:expected_error) { GRPC::InvalidArgument.new(nil, metadata) }
+      let(:expected_error) { GRPC::InvalidArgument.new("unknown cause", metadata) }
 
       it { is_expected.to eq action_stub }
 
