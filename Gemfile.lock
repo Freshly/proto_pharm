@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    proto_pharm (0.5.0)
+    proto_pharm (0.6.0.pre1)
       activesupport (>= 5.2.0)
       grpc (>= 1.12.0, < 2)
 
@@ -41,6 +41,7 @@ GEM
     pry-byebug (3.7.0)
       byebug (~> 11.0)
       pry (~> 0.10)
+    rack (2.2.3)
     rainbow (3.0.0)
     rake (13.0.1)
     regexp_parser (1.8.2)
@@ -58,6 +59,9 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.4)
+    rspice (0.25.2)
+      faker (>= 1.8, < 3.0)
+      rspec (~> 3.0)
     rubocop (0.92.0)
       parallel (~> 1.10)
       parser (>= 2.7.1.5)
@@ -69,12 +73,26 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (1.1.1)
       parser (>= 2.7.1.5)
+    rubocop-performance (1.8.1)
+      rubocop (>= 0.87.0)
+      rubocop-ast (>= 0.4.0)
+    rubocop-rails (2.8.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 0.87.0)
+    rubocop-rspec (1.43.2)
+      rubocop (~> 0.87)
     ruby-progressbar (1.10.1)
+    spicerack-styleguide (0.25.2)
+      rubocop (~> 0.92.0)
+      rubocop-performance (~> 1.8.0)
+      rubocop-rails (~> 2.8.0)
+      rubocop-rspec (~> 1.43.0)
     thread_safe (0.3.6)
     tzinfo (1.2.8)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
-    zeitwerk (2.4.1)
+    zeitwerk (2.4.2)
 
 PLATFORMS
   ruby
@@ -87,7 +105,9 @@ DEPENDENCIES
   pry-byebug
   rake (>= 12.3.3)
   rspec (~> 3.0)
+  rspice
   rubocop
+  spicerack-styleguide
 
 BUNDLED WITH
    2.1.4

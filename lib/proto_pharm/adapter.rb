@@ -1,16 +1,8 @@
 # frozen_string_literal: true
 
-require 'proto_pharm/grpc_stub_adapter'
-
 module ProtoPharm
   class Adapter
-    def enable!
-      adapter.enable!
-    end
-
-    def disable!
-      adapter.disable!
-    end
+    delegate :enable!, :disable!, :enabled?, to: :adapter
 
     private
 

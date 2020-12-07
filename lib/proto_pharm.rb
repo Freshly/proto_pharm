@@ -1,22 +1,26 @@
 # frozen_string_literal: true
 
-require 'proto_pharm/api'
-require 'proto_pharm/version'
-require 'proto_pharm/configuration'
-require 'proto_pharm/adapter'
-require 'proto_pharm/stub_registry'
+require "active_support/core_ext/module"
+require "grpc"
+
+require_relative "proto_pharm/version"
+require_relative "proto_pharm/configuration"
+
+require_relative "proto_pharm/introspection"
+require_relative "proto_pharm/stub_components/failure_response"
+
+require_relative "proto_pharm/adapter"
+require_relative "proto_pharm/grpc_stub_adapter"
+require_relative "proto_pharm/grpc_stub_adapter/mock_stub"
+
+require_relative "proto_pharm/stub_registry"
+require_relative "proto_pharm/api"
 
 module ProtoPharm
   extend ProtoPharm::Api
 
   class << self
-    def enable!
-      adapter.enable!
-    end
-
-    def disable!
-      adapter.disable!
-    end
+    delegate :enable!, :disable!, :enabled?, to: :adapter
 
     def reset!
       ProtoPharm.stub_registry.reset!
@@ -40,4 +44,4 @@ module ProtoPharm
   GRPC::ClientStub.prepend GrpcStubAdapter::MockStub
 end
 
-GrpcMock = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('GrpcMock', 'ProtoPharm')
+GrpcMock = ActiveSupport::Deprecation::DeprecatedConstantProxy.new("GrpcMock", "ProtoPharm")

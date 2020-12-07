@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative './hello_services_pb'
+require_relative "./hello_services_pb"
 
 class HelloClient
-  STUB_URL = 'localhost:8000'
+  STUB_URL = "localhost:8000"
 
   def client
     @client ||= Hello::Hello::Stub.new(STUB_URL, :this_channel_is_insecure)

@@ -1,18 +1,21 @@
 # frozen_string_literal: true
 
-require 'proto_pharm/request_pattern'
-require 'proto_pharm/response'
-require 'proto_pharm/response_sequence'
-require 'proto_pharm/errors'
+require "proto_pharm/request_pattern"
+require "proto_pharm/response"
+require "proto_pharm/response_sequence"
+require "proto_pharm/errors"
 
 module ProtoPharm
   class RequestStub
-    attr_reader :request_pattern, :response_sequence
+    attr_reader :received_requests, :request_pattern, :response_sequence
+
+    delegate :path, to: :request_pattern, allow_nil: true
 
     # @param path [String] gRPC path like /${service_name}/${method_name}
     def initialize(path)
       @request_pattern = RequestPattern.new(path)
       @response_sequence = []
+      @received_requests = []
     end
 
     def with(request = nil, &block)
@@ -34,7 +37,7 @@ module ProtoPharm
 
     def response
       if @response_sequence.empty?
-        raise ProtoPharm::NoResponseError, 'Must be set some values by using #GrpMock::RequestStub#to_run'
+        raise ProtoPharm::NoResponseError, "Must be set some values by using ProtoPharm::RequestStub#to_run"
       elsif @response_sequence.size == 1
         @response_sequence.first.next
       else
@@ -44,6 +47,14 @@ module ProtoPharm
 
         @response_sequence.first.next
       end
+    end
+
+    def received!(request)
+      @received_requests << request
+    end
+
+    def received_count
+      received_requests.size
     end
 
     # @param path [String]
