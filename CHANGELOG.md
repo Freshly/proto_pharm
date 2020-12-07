@@ -1,6 +1,7 @@
 # Changelog
 
-# Upcoming
+# 0.6.0
+*Release Date: 2020-12-07*
 
 - Rename gem to `proto_pharm`
 - Add support for `return_op` option([#1](https://github.com/Freshly/proto_pharm_old/pull/1), [#2](https://github.com/Freshly/proto_pharm_old/pull/2))
