@@ -3,6 +3,10 @@
 module ProtoPharm
   class GrpcStubAdapter
     module MockStub
+      class << self
+        attr_accessor :allow_net_connect
+      end
+
       def request_response(method, request, *args, return_op: false, **opts)
         return super unless ProtoPharm.enabled?
 
@@ -15,7 +19,7 @@ module ProtoPharm
           end
 
           return_op ? operation : operation.execute
-        elsif ProtoPharm.config.allow_net_connect
+        elsif _allow_net_connect?
           super
         else
           raise NetConnectNotAllowedError, method
@@ -32,7 +36,7 @@ module ProtoPharm
         if request_stub
           request_stub.received!(requests)
           request_stub.response.evaluate
-        elsif ProtoPharm.config.allow_net_connect
+        elsif _allow_net_connect?
           super
         else
           raise NetConnectNotAllowedError, method
@@ -47,7 +51,7 @@ module ProtoPharm
         if request_stub
           request_stub.received!(request)
           request_stub.response.evaluate
-        elsif ProtoPharm.config.allow_net_connect
+        elsif _allow_net_connect?
           super
         else
           raise NetConnectNotAllowedError, method
@@ -63,11 +67,17 @@ module ProtoPharm
         if request_stub
           request_stub.received!(requests)
           request_stub.response.evaluate
-        elsif ProtoPharm.config.allow_net_connect
+        elsif _allow_net_connect?
           super
         else
           raise NetConnectNotAllowedError, method
         end
+      end
+
+      private
+
+      def _allow_net_connect?
+        ProtoPharm::GrpcStubAdapter::MockStub.allow_net_connect == true
       end
     end
   end
