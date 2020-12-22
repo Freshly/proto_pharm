@@ -2,6 +2,6 @@
 
 module ProtoPharm
   class Configuration
-    # We'll need this soon..
+    extend Directive
   end
 end

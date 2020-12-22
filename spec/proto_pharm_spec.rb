@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe ProtoPharm do
+  # subject { described_class }
+
   let(:client) { HelloClient.new }
 
   around do |blk|
@@ -17,6 +19,8 @@ RSpec.describe ProtoPharm do
       described_class.allow_net_connect!
     end
   end
+
+  it { is_expected.to delegate_config_to ProtoPharm::Configuration }
 
   describe ".enable!" do
     include_context "with disabled network connections"

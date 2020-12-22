@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require "directive"
+require "grpc"
+
 require "active_support/core_ext/module"
 require "active_support/core_ext/object/blank"
-require "grpc"
 
 require_relative "proto_pharm/version"
 require_relative "proto_pharm/configuration"
@@ -24,6 +26,9 @@ require_relative "proto_pharm/api"
 module ProtoPharm
   extend ProtoPharm::Api
 
+  include Directive::ConfigDelegation
+  delegates_to_configuration
+
   class << self
     delegate :enable!, :disable!, :enabled?, to: :adapter
 
@@ -37,10 +42,6 @@ module ProtoPharm
 
     def adapter
       @adapter ||= Adapter.new
-    end
-
-    def config
-      @config ||= Configuration.new
     end
   end
 

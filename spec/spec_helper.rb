@@ -7,6 +7,7 @@ require "rspice"
 
 require "proto_pharm"
 require "proto_pharm/rspec"
+require "directive/spec_helper"
 
 require_relative "examples/hello/hello_services_pb"
 require_relative "examples/request/request_services_pb"
