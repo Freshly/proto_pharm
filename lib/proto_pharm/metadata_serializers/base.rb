@@ -5,7 +5,7 @@ module ProtoPharm
     module Base
       class << self
         def serialize(**metadata)
-          metadata.fetch(:metadata)
+          metadata.fetch(:metadata, {})
         end
       end
     end

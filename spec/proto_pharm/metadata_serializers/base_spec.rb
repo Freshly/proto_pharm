@@ -15,9 +15,7 @@ RSpec.describe ProtoPharm::MetadataSerializers::Base do
     context "when :metadata key is not present" do
       let(:metadata) { { another_key: serialized_metadata } }
 
-      it "raises KeyError" do
-        expect { serialize }.to raise_error KeyError, "key not found: :metadata"
-      end
+      it { is_expected.to eq({}) }
     end
   end
 end
