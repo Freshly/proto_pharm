@@ -18,6 +18,8 @@ RSpec.describe ProtoPharm do
     end
   end
 
+  it { is_expected.to delegate_config_to ProtoPharm::Configuration }
+
   describe ".enable!" do
     include_context "with disabled network connections"
 

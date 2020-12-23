@@ -1,6 +1,10 @@
 # Changelog
 
-# 0.6.0
+## Upcoming
+
+- Add configurable metadata serializer ([#6](https://github.com/Freshly/proto_pharm_old/pull/6))
+
+## 0.6.0
 *Release Date: 2020-12-07*
 
 - Rename gem to `proto_pharm`

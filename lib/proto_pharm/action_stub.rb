@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "active_support/core_ext/object/blank"
-
 module ProtoPharm
   class ActionStub < RequestStub
     include Introspection
