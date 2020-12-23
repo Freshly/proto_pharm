@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe ProtoPharm do
-  # subject { described_class }
-
   let(:client) { HelloClient.new }
 
   around do |blk|
