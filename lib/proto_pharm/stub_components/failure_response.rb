@@ -7,7 +7,7 @@ module ProtoPharm
       # @param message [String] A message to pass back with the exception
       # @param metadata [Hash] A hash of metadata to be passed back with the exception. See {ProtoPharm::MetadataSerializers::Base.serialize}.
       def to_fail_with(code = :invalid_argument, message = "unknown cause", **metadata)
-        to_raise(exception_class(code).new(message, MetadataSerializers::Base.serialize(**metadata)))
+        to_raise(exception_class(code).new(message, Configuration.config.metadata_serializer.serialize(**metadata)))
       end
 
       def to_fail
