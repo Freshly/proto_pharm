@@ -1,6 +1,10 @@
 # Changelog
 
-# 0.6.0
+## Upcoming
+
+- Add configurable metadata serializer
+
+## 0.6.0
 *Release Date: 2020-12-07*
 
 - Rename gem to `proto_pharm`
