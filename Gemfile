@@ -6,3 +6,5 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 # Specify your gem's dependencies in proto_pharm.gemspec
 gemspec
+
+gem "grpc", platform: :ruby

@@ -29,10 +29,10 @@ GEM
       spicerack (= 0.25.2)
     faker (2.14.0)
       i18n (>= 1.6, < 2)
-    google-protobuf (3.14.0-universal-darwin)
+    google-protobuf (3.14.0)
     googleapis-common-protos-types (1.0.5)
       google-protobuf (~> 3.11)
-    grpc (1.34.0-universal-darwin)
+    grpc (1.34.0)
       google-protobuf (~> 3.13)
       googleapis-common-protos-types (~> 1.0)
     grpc-tools (1.32.0)
@@ -128,6 +128,7 @@ PLATFORMS
 DEPENDENCIES
   bundler
   faker
+  grpc
   grpc-tools
   proto_pharm!
   pry-byebug
