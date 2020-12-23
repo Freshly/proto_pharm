@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "directive"
-require "grpc"
-
 require "active_support/core_ext/module"
 require "active_support/core_ext/object/blank"
+
+require "directive"
+require "grpc"
 
 require_relative "proto_pharm/version"
 require_relative "proto_pharm/configuration"
