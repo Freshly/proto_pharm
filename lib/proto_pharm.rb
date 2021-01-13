@@ -17,6 +17,7 @@ require_relative "proto_pharm/grpc_stub_adapter"
 require_relative "proto_pharm/grpc_stub_adapter/mock_stub"
 
 require_relative "proto_pharm/metadata_serializers/base"
+require_relative "proto_pharm/metadata_serializers/gruf"
 require_relative "proto_pharm/request_stub"
 require_relative "proto_pharm/action_stub"
 require_relative "proto_pharm/matchers/request_including_matcher"
