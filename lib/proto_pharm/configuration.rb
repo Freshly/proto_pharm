@@ -3,6 +3,7 @@
 require "directive"
 require_relative "metadata_serializers/base"
 require_relative "metadata_serializers/gruf"
+# require_relative "metadata_serializers/freshly"
 
 module ProtoPharm
   module Configuration
