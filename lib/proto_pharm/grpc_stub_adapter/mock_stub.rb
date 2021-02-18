@@ -15,7 +15,7 @@ module ProtoPharm
         if request_stub
           operation = OperationStub.new(metadata: opts[:metadata]) do
             request_stub.received!(request)
-            request_stub.response.evaluate
+            request_stub.response.evaluate(request)
           end
 
           return_op ? operation : operation.execute

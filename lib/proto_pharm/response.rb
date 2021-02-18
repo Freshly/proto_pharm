@@ -18,18 +18,24 @@ module ProtoPharm
                      end
       end
 
-      def evaluate
+      def evaluate(_request = nil)
         raise @exception.dup
       end
     end
 
     class Value
+      attr_reader :value
+
       def initialize(value)
         @value = value
       end
 
-      def evaluate
-        @value.dup
+      def evaluate(request = nil)
+        if value.respond_to?(:call)
+          value.call(request)
+        else
+          value.dup
+        end
       end
     end
   end
