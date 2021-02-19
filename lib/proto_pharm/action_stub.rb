@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "active_support/core_ext/object/blank"
-
 module ProtoPharm
   class ActionStub < RequestStub
     include Introspection
@@ -26,7 +24,13 @@ module ProtoPharm
 
     # @param proto [Object] response proto object
     # @param request_kwargs [Hash] parameters to respond with
-    def to_return(proto = nil, **request_kwargs)
+    def to_return(proto = nil, **request_kwargs, &block)
+      if block_given?
+        raise ArgumentError, "Cannot stub with static response if stubbing with a block" if proto.present? || request_kwargs.present?
+
+        return super(&block)
+      end
+
       super(endpoint.normalize_response_proto(proto, **request_kwargs))
     end
 

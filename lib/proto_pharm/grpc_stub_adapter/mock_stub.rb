@@ -3,6 +3,20 @@
 module ProtoPharm
   class GrpcStubAdapter
     module MockStub
+      class << self
+        def disable_net_connect!
+          @allow_net_connect = false
+        end
+
+        def allow_net_connect!
+          @allow_net_connect = true
+        end
+
+        def allow_net_connect?
+          @allow_net_connect || false
+        end
+      end
+
       def request_response(method, request, *args, return_op: false, **opts)
         return super unless ProtoPharm.enabled?
 
@@ -11,11 +25,11 @@ module ProtoPharm
         if request_stub
           operation = OperationStub.new(metadata: opts[:metadata]) do
             request_stub.received!(request)
-            request_stub.response.evaluate
+            request_stub.response.evaluate(request)
           end
 
           return_op ? operation : operation.execute
-        elsif ProtoPharm.config.allow_net_connect
+        elsif _allow_net_connect?
           super
         else
           raise NetConnectNotAllowedError, method
@@ -32,7 +46,7 @@ module ProtoPharm
         if request_stub
           request_stub.received!(requests)
           request_stub.response.evaluate
-        elsif ProtoPharm.config.allow_net_connect
+        elsif _allow_net_connect?
           super
         else
           raise NetConnectNotAllowedError, method
@@ -47,7 +61,7 @@ module ProtoPharm
         if request_stub
           request_stub.received!(request)
           request_stub.response.evaluate
-        elsif ProtoPharm.config.allow_net_connect
+        elsif _allow_net_connect?
           super
         else
           raise NetConnectNotAllowedError, method
@@ -63,11 +77,17 @@ module ProtoPharm
         if request_stub
           request_stub.received!(requests)
           request_stub.response.evaluate
-        elsif ProtoPharm.config.allow_net_connect
+        elsif _allow_net_connect?
           super
         else
           raise NetConnectNotAllowedError, method
         end
+      end
+
+      private
+
+      def _allow_net_connect?
+        MockStub.allow_net_connect?
       end
     end
   end

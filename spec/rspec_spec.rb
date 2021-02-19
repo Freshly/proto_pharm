@@ -103,11 +103,13 @@ RSpec.describe ProtoPharm::RSpec do
     end
 
     context "with #and_return" do
+      let(:request_message) { Faker::ChuckNorris.fact }
+
       shared_examples_for "returns response" do
-        it { expect(client.send_message("hello!")).to eq(response) }
+        it { expect(client.send_message(request_message)).to eq(response) }
 
         context "when return_op is true" do
-          let(:client_call) { client.send_message("hello!", return_op: true) }
+          let(:client_call) { client.send_message(request_message, return_op: true) }
           let!(:execute) { client_call.execute }
 
           it "returns an executable operation" do
@@ -119,7 +121,7 @@ RSpec.describe ProtoPharm::RSpec do
           end
 
           it "records the request as received" do
-            expect(service).to have_received_rpc(action).with(msg: "hello!")
+            expect(service).to have_received_rpc(action).with(msg: request_message)
           end
         end
       end
@@ -140,6 +142,21 @@ RSpec.describe ProtoPharm::RSpec do
 
         it_behaves_like "returns response"
       end
+
+      # TODO: Someday...
+      # context "when given a block" do
+      #   let(:response) { Hello::HelloResponse.new(msg: "test from block") }
+
+      #   before do
+      #     allow_grpc_service(service).to receive_rpc(action).and_return do |request|
+      #       expect(request).to eq Hello::HelloRequest.new(msg: request_message)
+
+      #       response
+      #     end
+      #   end
+
+      #   it_behaves_like "returns response"
+      # end
     end
 
     context "with #and_raise" do

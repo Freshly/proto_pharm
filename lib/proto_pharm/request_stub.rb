@@ -23,9 +23,17 @@ module ProtoPharm
       self
     end
 
-    def to_return(*values)
-      responses = [*values].flatten.map { |v| Response::Value.new(v) }
+    def to_return(*values, &block)
+      if block_given?
+        raise ArgumentError, "Cannot stub with static response if stubbing with a block" if values.any?
+
+        responses = [ Response::Value.new(block) ]
+      else
+        responses = [*values].flatten.map { |v| Response::Value.new(v) }
+      end
+
       @response_sequence << ProtoPharm::ResponsesSequence.new(responses)
+
       self
     end
 

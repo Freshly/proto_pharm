@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "gruf"
+
 RSpec.describe ProtoPharm do
   let(:client) { HelloClient.new }
 
@@ -17,6 +19,8 @@ RSpec.describe ProtoPharm do
       described_class.allow_net_connect!
     end
   end
+
+  it { is_expected.to delegate_config_to ProtoPharm::Configuration }
 
   describe ".enable!" do
     include_context "with disabled network connections"
@@ -46,10 +50,12 @@ RSpec.describe ProtoPharm do
 
     context "with #to_return" do
       shared_examples_for "returns response" do
-        it { expect(client.send_message("hello!")).to eq(response) }
+        let(:message) { "hello!" }
+
+        it { expect(client.send_message(message)).to eq(response) }
 
         context "when return_op is true" do
-          let!(:client_call) { client.send_message("hello!", return_op: true) }
+          let!(:client_call) { client.send_message(message, return_op: true) }
           let(:execute) { client_call.execute }
 
           it "returns an executable operation" do
@@ -64,7 +70,7 @@ RSpec.describe ProtoPharm do
             expect(service).not_to have_received_rpc(action)
             execute
             expect(service).to have_received_rpc(action)
-            expect(service).to have_received_rpc(action).with(msg: "hello!")
+            expect(service).to have_received_rpc(action).with(msg: message)
           end
         end
       end
@@ -90,6 +96,70 @@ RSpec.describe ProtoPharm do
         end
 
         it_behaves_like "returns response"
+      end
+
+      context "when passed a block" do
+        let(:message) { "hello!" }
+        let(:response) { Hello::HelloResponse.new(msg: message.reverse) }
+        let(:receipt_test) { double(test: true) }
+
+        context "when also passed arguments" do
+          context "when passed a proto" do
+            it "raises an ArgumentError" do
+              expect { described_class.stub_grpc_action(service, action).to_return(response) {} }.
+                to raise_error ArgumentError, "Cannot stub with static response if stubbing with a block"
+            end
+          end
+
+          context "when passed kwargs" do
+            it "raises an ArgumentError" do
+              expect { described_class.stub_grpc_action(service, action).to_return(msg: message) {} }.
+                to raise_error ArgumentError, "Cannot stub with static response if stubbing with a block"
+            end
+          end
+        end
+
+        context "with a successful response" do
+          before do
+            described_class.enable!
+            described_class.stub_grpc_action(service, action).to_return do |request|
+              expect(request).to eq Hello::HelloRequest.new(msg: message)
+
+              receipt_test.test
+
+              Hello::HelloResponse.new(msg: request.msg.reverse)
+            end
+          end
+
+          it_behaves_like "returns response" do
+            let(:message) { Faker::ChuckNorris.fact }
+
+            # Make sure the block really did get called
+            it "calls the receipt test" do
+              client.send_message(message)
+              expect(receipt_test).to have_received(:test)
+            end
+          end
+        end
+
+        context "with failure response" do
+          let(:error) { StandardError.new("message") }
+
+          before do
+            described_class.stub_grpc_action(service, action).to_return do |request|
+              expect(request).to eq Hello::HelloRequest.new(msg: message)
+
+              receipt_test.test
+
+              raise error
+            end
+          end
+
+          it "raises the error" do
+            expect { client.send_message(message) }.to raise_error error
+            expect(receipt_test).to have_received :test
+          end
+        end
       end
     end
 
@@ -122,6 +192,38 @@ RSpec.describe ProtoPharm do
           expect(exception.message).to eq "5:#{message}"
           expect(exception.metadata).to eq metadata
           expect(service).to have_received_rpc(action).with(msg: "hello!")
+        end
+      end
+
+      context "with Gruf metadata serializer" do
+        let(:code) { :not_found }
+        let(:app_code) { Faker::Lorem.sentence.parameterize.underscore }
+        let(:gruf_metadata_key) { Gruf.error_metadata_key }
+        let(:serialized_gruf_metadata) do
+          {
+            code: code,
+            app_code: app_code,
+            message: message,
+            field_errors: [],
+            debug_info: {},
+          }.to_json
+        end
+
+        before do
+          allow(described_class.config).to receive(:metadata_serializer).and_return(ProtoPharm::MetadataSerializers::Gruf)
+
+          described_class.
+            stub_grpc_action(service, action).
+            to_fail_with(code, message, app_code: app_code, metadata: metadata)
+        end
+
+        it "returns the expected error" do
+          expect { client.send_message("hello!") }.to raise_error do |exception|
+            expect(exception).to be_a GRPC::NotFound
+            expect(exception.message).to eq "5:#{message}"
+            expect(exception.metadata).to eq metadata.merge(gruf_metadata_key => serialized_gruf_metadata)
+            expect(service).to have_received_rpc(action).with(msg: "hello!")
+          end
         end
       end
     end
@@ -219,15 +321,14 @@ RSpec.describe ProtoPharm do
   end
 
   describe ".stub_request" do
+    before { described_class.enable! }
+
     include_context "with disabled network connections"
 
     context "with to_return" do
       let(:response) { Hello::HelloResponse.new(msg: "test") }
 
-      before do
-        described_class.enable!
-        described_class.stub_request("/hello.hello/Hello").to_return(response)
-      end
+      before { described_class.stub_request("/hello.hello/Hello").to_return(response) }
 
       it { expect(client.send_message("hello!")).to eq(response) }
 
@@ -237,6 +338,56 @@ RSpec.describe ProtoPharm do
         it "returns an executable operation" do
           expect(client_call).to be_a described_class::OperationStub
           expect(client_call.execute).to eq response
+        end
+      end
+
+      context "when passed a block" do
+        let(:message) { Faker::ChuckNorris.fact }
+        let(:receipt_test) { double(test: true) }
+
+        context "when also passed arguments" do
+          context "when passed a proto" do
+            it "raises an ArgumentError" do
+              expect { described_class.stub_request("/hello.hello/Hello").to_return(response) {} }.
+                to raise_error ArgumentError, "Cannot stub with static response if stubbing with a block"
+            end
+          end
+        end
+
+        context "with a successful response" do
+          before do
+            described_class.stub_request("/hello.hello/Hello").to_return do |request|
+              expect(request).to eq Hello::HelloRequest.new(msg: message)
+
+              receipt_test.test
+
+              Hello::HelloResponse.new(msg: request.msg.reverse)
+            end
+          end
+
+          it "returns the response from the block" do
+            expect(client.send_message(message)).to eq Hello::HelloResponse.new(msg: message.reverse)
+            expect(receipt_test).to have_received :test
+          end
+        end
+
+        context "with failure response" do
+          let(:error) { StandardError.new("message") }
+
+          before do
+            described_class.stub_request("/hello.hello/Hello").to_return do |request|
+              expect(request).to eq Hello::HelloRequest.new(msg: message)
+
+              receipt_test.test
+
+              raise error
+            end
+          end
+
+          it "raises the error" do
+            expect { client.send_message(message) }.to raise_error error
+            expect(receipt_test).to have_received :test
+          end
         end
       end
     end

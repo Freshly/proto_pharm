@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
-module ProtoPharm
-  class Configuration
-    attr_accessor :allow_net_connect
+require "directive"
+require_relative "metadata_serializers/base"
+require_relative "metadata_serializers/gruf"
 
-    def initialize
-      @allow_net_connect = true
+module ProtoPharm
+  module Configuration
+    extend Directive
+
+    configuration_options do
+      option :metadata_serializer, default: MetadataSerializers::Base
     end
   end
 end

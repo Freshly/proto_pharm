@@ -24,10 +24,12 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "activesupport", ">= 5.2.0"
+  spec.add_dependency "directive"
   spec.add_dependency "grpc", ">= 1.12.0", "< 2"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "faker"
+  spec.add_development_dependency "gruf"
   spec.add_development_dependency "grpc-tools"
   spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "rake", ">= 12.3.3"

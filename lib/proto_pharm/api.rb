@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "proto_pharm/request_stub"
-require "proto_pharm/action_stub"
-require "proto_pharm/matchers/request_including_matcher"
-
 module ProtoPharm
   module Api
     # @param path [String]
@@ -21,11 +17,15 @@ module ProtoPharm
     end
 
     def disable_net_connect!
-      ProtoPharm.config.allow_net_connect = false
+      GrpcStubAdapter::MockStub.disable_net_connect!
     end
 
     def allow_net_connect!
-      ProtoPharm.config.allow_net_connect = true
+      GrpcStubAdapter::MockStub.allow_net_connect!
+    end
+
+    def allow_net_connect?
+      GrpcStubAdapter::MockStub.allow_net_connect?
     end
   end
 end

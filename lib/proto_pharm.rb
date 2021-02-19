@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require "active_support/core_ext/module"
+require "active_support/core_ext/object/blank"
+
+require "directive"
 require "grpc"
 
 require_relative "proto_pharm/version"
@@ -13,11 +16,19 @@ require_relative "proto_pharm/adapter"
 require_relative "proto_pharm/grpc_stub_adapter"
 require_relative "proto_pharm/grpc_stub_adapter/mock_stub"
 
+require_relative "proto_pharm/metadata_serializers/base"
+require_relative "proto_pharm/metadata_serializers/gruf"
+require_relative "proto_pharm/request_stub"
+require_relative "proto_pharm/action_stub"
+require_relative "proto_pharm/matchers/request_including_matcher"
 require_relative "proto_pharm/stub_registry"
 require_relative "proto_pharm/api"
 
 module ProtoPharm
   extend ProtoPharm::Api
+
+  include Directive::ConfigDelegation
+  delegates_to_configuration
 
   class << self
     delegate :enable!, :disable!, :enabled?, to: :adapter
@@ -32,10 +43,6 @@ module ProtoPharm
 
     def adapter
       @adapter ||= Adapter.new
-    end
-
-    def config
-      @config ||= Configuration.new
     end
   end
 
