@@ -2,6 +2,9 @@
 
 ## Upcoming
 
+## 0.7.0
+*Release Date: 2021-02-19*
+
 ### Additions
 - Add configurable metadata serializer ([#6](https://github.com/Freshly/proto_pharm/pull/6))
 - Add metadata serializer for Gruf ([#7](https://github.com/Freshly/proto_pharm/pull/7))
