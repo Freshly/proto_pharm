@@ -60,6 +60,16 @@ client.hello(Hello::HelloRequest.new(msg: 'Hello?')) # => Sent to network
 client.hello(Hello::HelloRequest.new(msg: 'Hola?')) # => <Hello::HelloResponse: msg: "Bienvenidos!">
 ```
 
+Or, stub the response with a block to perform some additional business logic:  
+_(Note - the `allow_grpc_service` syntax currently does not support block-stubbing)_
+```ruby
+stub_grpc_action(Hello::Hello::Service, :Hello).to_return do |request|
+  { msg: request.msg.reverse }
+end
+
+client.hello(Hello::HelloRequest.new(msg: 'Hello?')) # => <Hello::HelloResponse: msg: "?olleH">
+```
+
 Stub a failure response:
 ```ruby
 allow_grpc_service(Hello::Hello)
@@ -150,7 +160,16 @@ client.hello(Hello::HelloRequest.new(msg: 'hi'))    # => Hello::HelloResponse.ne
 
 ```
 
-### You can user either proto objects or hash for stubbing requests
+### Stubbing with a block
+```ruby
+ProtoPharm.stub_grpc_action(Hello::Hello::Service, :Hello).to_return do |request|
+  { msg: request.msg.reverse }
+end
+
+client.hello(Hello::HelloRequest.new(msg: 'Hello?')) # => <Hello::HelloResponse: msg: "?olleH">
+```
+
+### You can use either proto objects or hash for stubbing requests
 
 ```ruby
 ProtoPharm.stub_grpc_action(Hello::Hello::Service, :Hello).with(Hello::HelloRequest.new(msg: 'hi')).to_return(msg: 'test')
