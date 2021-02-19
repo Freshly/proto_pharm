@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "faker"
+  spec.add_development_dependency "gruf"
   spec.add_development_dependency "grpc-tools"
   spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "rake", ">= 12.3.3"

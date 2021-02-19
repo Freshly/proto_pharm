@@ -4,6 +4,7 @@
 
 ### Additions
 - Add configurable metadata serializer ([#6](https://github.com/Freshly/proto_pharm/pull/6))
+- Add metadata serializer for Gruf ([#7](https://github.com/Freshly/proto_pharm/pull/7))
 - Stub responses using a block ([#8](https://github.com/Freshly/proto_pharm/pull/8))
 
 ## 0.6.0

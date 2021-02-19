@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "gruf"
+
 RSpec.describe ProtoPharm do
   let(:client) { HelloClient.new }
 
@@ -190,6 +192,38 @@ RSpec.describe ProtoPharm do
           expect(exception.message).to eq "5:#{message}"
           expect(exception.metadata).to eq metadata
           expect(service).to have_received_rpc(action).with(msg: "hello!")
+        end
+      end
+
+      context "with Gruf metadata serializer" do
+        let(:code) { :not_found }
+        let(:app_code) { Faker::Lorem.sentence.parameterize.underscore }
+        let(:gruf_metadata_key) { Gruf.error_metadata_key }
+        let(:serialized_gruf_metadata) do
+          {
+            code: code,
+            app_code: app_code,
+            message: message,
+            field_errors: [],
+            debug_info: {},
+          }.to_json
+        end
+
+        before do
+          allow(described_class.config).to receive(:metadata_serializer).and_return(ProtoPharm::MetadataSerializers::Gruf)
+
+          described_class.
+            stub_grpc_action(service, action).
+            to_fail_with(code, message, app_code: app_code, metadata: metadata)
+        end
+
+        it "returns the expected error" do
+          expect { client.send_message("hello!") }.to raise_error do |exception|
+            expect(exception).to be_a GRPC::NotFound
+            expect(exception.message).to eq "5:#{message}"
+            expect(exception.metadata).to eq metadata.merge(gruf_metadata_key => serialized_gruf_metadata)
+            expect(service).to have_received_rpc(action).with(msg: "hello!")
+          end
         end
       end
     end
