@@ -6,6 +6,7 @@
 - Add configurable metadata serializer ([#6](https://github.com/Freshly/proto_pharm/pull/6))
 - Add metadata serializer for Gruf ([#7](https://github.com/Freshly/proto_pharm/pull/7))
 - Stub responses using a block ([#8](https://github.com/Freshly/proto_pharm/pull/8))
+- Net connect method cleanup ([#9](https://github.com/Freshly/proto_pharm/pull/9))
 
 ## 0.6.0
 *Release Date: 2020-12-07*

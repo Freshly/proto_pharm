@@ -4,7 +4,17 @@ module ProtoPharm
   class GrpcStubAdapter
     module MockStub
       class << self
-        attr_accessor :allow_net_connect
+        def disable_net_connect!
+          @allow_net_connect = false
+        end
+
+        def allow_net_connect!
+          @allow_net_connect = true
+        end
+
+        def allow_net_connect?
+          @allow_net_connect || false
+        end
       end
 
       def request_response(method, request, *args, return_op: false, **opts)
@@ -77,7 +87,7 @@ module ProtoPharm
       private
 
       def _allow_net_connect?
-        ProtoPharm::GrpcStubAdapter::MockStub.allow_net_connect == true
+        MockStub.allow_net_connect?
       end
     end
   end
