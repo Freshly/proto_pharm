@@ -24,10 +24,9 @@ RSpec.describe ProtoPharm::MetadataSerializers::Gruf do
       }.to_json
     end
     let(:expected_response) do
-      {
+      metadata.transform_values(&:to_s).merge(
         gruf_metadata_key => serialized_gruf_metadata,
-        :metadata => metadata.transform_values(&:to_s),
-      }
+      )
     end
 
     context "when Gruf is not defined" do
@@ -61,12 +60,12 @@ RSpec.describe ProtoPharm::MetadataSerializers::Gruf do
         let(:metadata) { Faker::ChuckNorris.fact }
 
         it "raises" do
-          expect { serialize }.to raise_error NoMethodError
+          expect { serialize }.to raise_error TypeError
         end
       end
 
       context "when given metadata is a hash" do
-        let(:serialized_metadata) { Hash[*Faker::Lorem.unique.words(number: 4)] }
+        let(:metadata) { Hash[*Faker::Lorem.unique.words(number: 4)].symbolize_keys }
 
         it { is_expected.to eq expected_response }
       end
