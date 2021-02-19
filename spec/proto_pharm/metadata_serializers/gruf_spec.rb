@@ -12,6 +12,7 @@ RSpec.describe ProtoPharm::MetadataSerializers::Gruf do
     let(:app_code) { Faker::Lorem.words.join("_") }
     let(:message) { Faker::ChuckNorris.fact }
     let(:metadata) { {} }
+    let(:field_errors) { [] }
 
     let(:gruf_metadata_key) { Gruf.error_metadata_key }
     let(:serialized_gruf_metadata) do
@@ -19,7 +20,7 @@ RSpec.describe ProtoPharm::MetadataSerializers::Gruf do
         code: code,
         app_code: app_code,
         message: message,
-        field_errors: [],
+        field_errors: field_errors,
         debug_info: {},
       }.to_json
     end
@@ -76,6 +77,24 @@ RSpec.describe ProtoPharm::MetadataSerializers::Gruf do
       let(:another_value) { Faker::ChuckNorris.fact }
 
       before { input.merge!(another_key => another_value) }
+
+      it { is_expected.to eq expected_response }
+    end
+
+    context "with field errors" do
+      let(:field_name) { Faker::Lorem.unique.word }
+      let(:error_code) { Faker::Hipster.word }
+      let(:message) { Faker::ChuckNorris.fact }
+      let(:field_error) do
+        {
+          field_name: field_name,
+          error_code: error_code,
+          message: message,
+        }
+      end
+      let(:field_errors) { [ field_error ] }
+
+      before { input.merge!(field_errors: [ field_error ]) }
 
       it { is_expected.to eq expected_response }
     end
