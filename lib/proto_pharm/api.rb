@@ -17,11 +17,15 @@ module ProtoPharm
     end
 
     def disable_net_connect!
-      ProtoPharm::GrpcStubAdapter::MockStub.allow_net_connect = false
+      GrpcStubAdapter::MockStub.disable_net_connect!
     end
 
     def allow_net_connect!
-      ProtoPharm::GrpcStubAdapter::MockStub.allow_net_connect = true
+      GrpcStubAdapter::MockStub.allow_net_connect!
+    end
+
+    def allow_net_connect?
+      GrpcStubAdapter::MockStub.allow_net_connect?
     end
   end
 end
