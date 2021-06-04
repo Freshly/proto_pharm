@@ -10,6 +10,7 @@ jobs:
         ruby:
         - "2.6.x"
         - "2.7.x"
+        - "3.0.x"
 
     steps:
     - uses: actions/checkout@v1
@@ -27,7 +28,7 @@ jobs:
       env:
           BUNDLE_GEM__FURY__IO: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
       run: |
-        gem install bundler -v "~> 2.1.0"
+        gem install bundler
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
     - name: Run RSpec
