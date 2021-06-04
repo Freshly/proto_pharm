@@ -28,7 +28,7 @@ jobs:
       env:
           BUNDLE_GEM__FURY__IO: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
       run: |
-        gem install bundler -v "~> 2.1.0"
+        gem install bundler
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
     - name: Run RSpec
